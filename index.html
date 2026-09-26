@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title data-i18n="site.title">علی قائمی — طراح گرافیک و هنرمند</title>
+<meta name="description" content="پورتفولیوی علی قائمی: نقاشی، طراحی گرافیک و NFT" />
+<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Allura&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo" data-i18n="nav.logo">علی</a>
+  
+  <ul id="mainMenu">
+    <li><a href="#about" data-i18n="nav.about">درباره</a></li>
+    <li><a href="#works" data-i18n="nav.works">آثار</a></li>
+    <li><a href="about.html" data-i18n="nav.story">داستان من</a></li>
+    <li><a href="contact.html" data-i18n="nav.contact">تماس</a></li>
+  </ul>
+  
+  <div class="lang-switcher">
+    <button class="lang-btn" id="langBtn">
+      <span id="langFlag">🇬🇧</span>
+      <span id="langCode">EN</span>
+    </button>
+    <div class="lang-dropdown" id="langDropdown">
+      <button data-lang="fa"><span>🇮🇷</span> فارسی</button>
+      <button data-lang="en"><span>🇬🇧</span> English</button>
+      <button data-lang="ar"><span>🇸🇦</span> العربية</button>
+      <button data-lang="ru"><span>🇷🇺</span> Русский</button>
+      <button data-lang="de"><span>🇩🇪</span> Deutsch</button>
+      <button data-lang="zh"><span>🇨🇳</span> 中文</button>
+      <button data-lang="fr"><span>🇫🇷</span> Français</button>
+    </div>
+  </div>
+  
+  <div class="auth-buttons">
+    <button class="auth-btn" id="loginBtn" data-i18n="nav.login">ورود</button>
+    <button class="auth-btn auth-btn-primary" id="signupBtn" data-i18n="nav.signup">ثبت‌نام</button>
+  </div>
+  
+  <button class="menu-toggle" id="menuToggle" aria-label="منو">☰</button>
+</nav>
+
+<!-- SPLASH SCREEN -->
+<div class="splash" id="splash">
+  <div class="splash-glow"></div>
+  
+  <!-- مرحله ۱: بیت فردوسی -->
+  <div class="splash-poem-block" id="splashPoem">
+    <div class="splash-bismillah" id="splashBismillah" data-i18n="splash.bismillah">﷽</div>
+    <div class="splash-poem">
+      <p class="splash-line" data-i18n="splash.poem1">به نام خداوند جان و خرد</p>
+      <p class="splash-line" data-i18n="splash.poem2">کزین برتر اندیشه برنگذرد</p>
+    </div>
+    <div class="splash-author" data-i18n="splash.author">— فردوسی، شاهنامه —</div>
+  </div>
+  
+  <!-- مرحله ۲: لوگو و امضا -->
+  <div class="splash-logo-block" id="splashLogo">
+    <img src="images/logo/portrait.png" class="logo-portrait" alt="" />
+    <img src="images/logo/line.png" class="logo-line" alt="" />
+    <img src="images/logo/name.png" class="logo-name" alt="" />
+  </div>
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-glow"></div>
+  <div class="tag" data-i18n="hero.tag">طراح گرافیک · هنرمند · عکاس</div>
+  <h1>
+    <span data-i18n="hero.title1">سلام، من علی قائمی هستم.</span><br/>
+    <span data-i18n="hero.title2">تصویر می‌سازم، ایده می‌پرورم.</span>
+  </h1>
+  <p data-i18n="hero.desc">
+    طراح گرافیک، تصویرساز و عکاس. اینجا مجموعه‌ای از نقاشی‌ها، طراحی‌ها و ایده‌هایی که در طول مسیر ساختم رو می‌بینی.
+  </p>
+  <div class="btns">
+    <a href="#works" class="btn btn-primary" data-i18n="hero.viewWorks">دیدن آثار</a>
+    <a href="contact.html" class="btn btn-ghost" data-i18n="hero.startCollab">شروع همکاری</a>
+  </div>
+</header>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-photo reveal">
+      <img src="images/profile/me.jpg" alt="علی قائمی" />
+    </div>
+    <div class="about-text reveal">
+      <div class="section-head" style="margin-bottom:24px">
+        <div class="num" data-i18n="about.num">۰۱ — درباره</div>
+        <h2 data-i18n="about.title">یه کم از خودم</h2>
+      </div>
+      <p data-i18n="about.p1">
+        من علی‌ام، طراح گرافیک، تصویرساز و عکاس. سال‌هاست با رنگ، خط و فرم زندگی می‌کنم و روی پروژه‌های تصویرسازی، برندینگ و عکاسی کار می‌کنم.
+      </p>
+      <p data-i18n="about.p2">
+        باور دارم طراحی خوب فقط زیبا نیست — باید حرف بزنه، حس بده و ماندگار باشه. اینجا پنجره‌ای کوچیک به دنیای کاری و ذهنی منه.
+      </p>
+      
+      <div class="skills-block">
+        <h3 data-i18n="about.skillsTitle">مهارت‌ها</h3>
+        
+        <div class="skill">
+          <div class="skill-head"><span>Photoshop</span><span data-i18n="about.levels.professional">حرفه‌ای</span></div>
+          <div class="skill-bar"><div class="skill-fill" data-pct="95"></div></div>
+        </div>
+        
+        <div class="skill">
+          <div class="skill-head"><span>Krita</span><span data-i18n="about.levels.professional">حرفه‌ای</span></div>
+          <div class="skill-bar"><div class="skill-fill" data-pct="90"></div></div>
+        </div>
+
+        <a href="about.html" class="btn-more" data-i18n="about.viewMore">
+          توضیحات بیشتر و داستان من ←
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORKS -->
+<section class="bg-alt" id="works">
+  <div class="section-head reveal">
+    <div class="num" data-i18n="works.num">۰۲ — گالری</div>
+    <h2 data-i18n="works.title">آثار و نقاشی‌ها</h2>
+    <p data-i18n="works.desc">مجموعه‌ای از کارها در سه دسته‌بندی: دیجیتال، سنتی و اسکچ.</p>
+  </div>
+  
+  <div class="gallery" id="featuredGallery"></div>
+  
+  <div class="center-btn" style="text-align:center;margin-top:50px">
+    <a href="works.html" class="btn btn-ghost" style="padding:14px 32px;font-size:.95rem" data-i18n="works.viewAll">
+      نمایش همه آثار من ←
+    </a>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <h2><span data-i18n="contact.title"></span></h2>
+  <p data-i18n="contact.desc">اگه پروژه‌ای داری یا فقط می‌خوای سلام کنی، راحت پیام بده.</p>
+  <div class="socials">
+    <a href="mailto:alighaemi315@gmail.com" data-i18n="contact.email">ایمیل</a>
+    <a href="https://www.instagram.com/iamalighaemi" target="_blank" data-i18n="contact.instagram">اینستاگرام</a>
+    <a href="https://t.me/AliGhaemi1384" target="_blank" data-i18n="contact.telegram">تلگرام</a>
+    <a href="https://youtube.com/@iliya.informal" target="_blank" data-i18n="contact.youtube">یوتیوب</a>
+  </div>
+</section>
+
+<footer>
+  <span data-i18n="site.footer">ساخته شده با ❤️ توسط علی قائمی — © ۱۴۰۴</span>
+</footer>
+
+<!-- ═══ MODAL ثبت‌نام ═══ -->
+<div class="modal-overlay" id="signupModal">
+  <div class="modal">
+    <button class="modal-close" data-close>×</button>
+    
+    <div class="modal-header">
+      <h2 data-i18n="auth.signupTitle">ثبت‌نام</h2>
+      <p data-i18n="auth.signupSubtitle">به جمع ما خوش آمدی 👋</p>
+    </div>
+    
+    <form id="signupForm" class="modal-form">
+      <div class="form-row">
+        <label><span data-i18n="auth.name">اسم کامل</span> <span>*</span></label>
+        <input type="text" name="name" required data-i18n-placeholder="auth.namePlaceholder" />
+      </div>
+      
+      <div class="form-row">
+        <label><span data-i18n="auth.email">ایمیل</span> <span>*</span></label>
+        <input type="email" name="email" required placeholder="example@email.com" dir="ltr" />
+      </div>
+      
+      <div class="form-row">
+        <label><span data-i18n="auth.password">پسورد</span> <span>*</span></label>
+        <input type="password" name="password" required data-i18n-placeholder="auth.passwordPlaceholder" dir="ltr" minlength="6" />
+      </div>
+      
+      <div class="form-row">
+        <label><span data-i18n="auth.phone">شماره موبایل</span> <span>*</span></label>
+        <input type="tel" name="phone" required placeholder="9123456789" dir="ltr" pattern="[0-9]{10,15}" />
+        <small style="color:#8a8a95;font-size:.75rem;margin-top:-4px" data-i18n="auth.phoneHint">این شماره برای بازیابی رمز استفاده میشه</small>
+      </div>
+      
+      <div class="form-grid-2">
+        <div class="form-row">
+          <label data-i18n="auth.age">سن</label>
+          <input type="number" name="age" min="10" max="100" data-i18n-placeholder="auth.agePlaceholder" />
+        </div>
+        
+        <div class="form-row">
+          <label data-i18n="auth.gender">جنسیت</label>
+          <select name="gender">
+            <option value="" data-i18n="auth.genderSelect">انتخاب کن</option>
+            <option value="male" data-i18n="auth.genderMale">مرد</option>
+            <option value="female" data-i18n="auth.genderFemale">زن</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <label><span data-i18n="auth.role">نقش شما</span> <span>*</span></label>
+        <select name="role" required>
+          <option value="" data-i18n="auth.roleSelect">انتخاب کن</option>
+          <option value="artist" data-i18n="auth.roles.artist">🎨 هنرمند</option>
+          <option value="student" data-i18n="auth.roles.student">📚 هنرجوی هنر</option>
+          <option value="lover" data-i18n="auth.roles.lover">💙 دوست‌دار هنر</option>
+          <option value="gallery" data-i18n="auth.roles.gallery">🖼️ گالری‌دار</option>
+          <option value="buyer" data-i18n="auth.roles.buyer">🛒 خریدار آثار هنری</option>
+          <option value="other" data-i18n="auth.roles.other">✨ سایر</option>
+        </select>
+      </div>
+      
+      <div class="form-message" id="signupMessage"></div>
+      
+      <button type="submit" class="modal-submit">
+        <span data-i18n="auth.signupSubmit">ساخت حساب</span>
+      </button>
+      
+      <p class="form-footer">
+        <span data-i18n="auth.hasAccount">قبلاً ثبت‌نام کردی؟</span>
+        <button type="button" class="link-btn" id="switchToLogin" data-i18n="auth.switchToLogin">وارد شو</button>
+      </p>
+    </form>
+  </div>
+</div>
+
+<!-- ═══ MODAL ورود ═══ -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <button class="modal-close" data-close>×</button>
+    
+    <div class="modal-header">
+      <h2 data-i18n="auth.loginTitle">ورود</h2>
+      <p data-i18n="auth.loginSubtitle">خوش برگشتی 👋</p>
+    </div>
+    
+    <form id="loginForm" class="modal-form">
+      <div class="form-row">
+        <label data-i18n="auth.email">ایمیل</label>
+        <input type="email" name="email" required placeholder="example@email.com" dir="ltr" />
+      </div>
+      
+      <div class="form-row">
+        <label data-i18n="auth.password">پسورد</label>
+        <input type="password" name="password" required data-i18n-placeholder="auth.passwordPlaceholder" dir="ltr" />
+      </div>
+      
+      <div style="text-align:left;margin-top:-8px">
+        <button type="button" class="link-btn" id="forgotPasswordBtn" data-i18n="auth.forgotPassword">فراموشی رمز؟</button>
+      </div>
+      
+      <div class="form-message" id="loginMessage"></div>
+      
+      <button type="submit" class="modal-submit">
+        <span data-i18n="auth.loginSubmit">ورود به حساب</span>
+      </button>
+      
+      <p class="form-footer">
+        <span data-i18n="auth.noAccount">حساب نداری؟</span>
+        <button type="button" class="link-btn" id="switchToSignup" data-i18n="auth.switchToSignup">ثبت‌نام کن</button>
+      </p>
+    </form>
+  </div>
+</div>
+
+<!-- ═══ MODAL فراموشی رمز ═══ -->
+<div class="modal-overlay" id="forgotModal">
+  <div class="modal">
+    <button class="modal-close" data-close>×</button>
+    
+    <div class="modal-header">
+      <h2 data-i18n="auth.forgotTitle">فراموشی رمز</h2>
+      <p data-i18n="auth.forgotSubtitle">ایمیل و شماره موبایلت رو وارد کن 🔐</p>
+    </div>
+    
+    <form id="forgotForm" class="modal-form">
+      <div class="form-row">
+        <label><span data-i18n="auth.email">ایمیل</span> <span>*</span></label>
+        <input type="email" name="email" required placeholder="example@email.com" dir="ltr" />
+      </div>
+      
+      <div class="form-row">
+        <label><span data-i18n="auth.phone">شماره موبایل</span> <span>*</span></label>
+        <input type="tel" name="phone" required placeholder="9123456789" dir="ltr" pattern="[0-9]{10,15}" />
+      </div>
+      
+      <div class="form-message" id="forgotMessage"></div>
+      
+      <button type="submit" class="modal-submit">
+        <span data-i18n="auth.forgotSubmit">دریافت کد بازیابی</span>
+      </button>
+      
+      <p class="form-footer">
+        <span data-i18n="auth.remembered">رمزت یادت اومد؟</span>
+        <button type="button" class="link-btn" id="backToLoginFromForgot" data-i18n="auth.backToLogin">برگرد به ورود</button>
+      </p>
+    </form>
+    
+    <form id="resetForm" class="modal-form" style="display:none">
+      <div class="form-row">
+        <label><span data-i18n="auth.code">کد بازیابی ۶ رقمی</span> <span>*</span></label>
+        <input type="text" name="code" required data-i18n-placeholder="auth.codePlaceholder" dir="ltr" pattern="[0-9]{6}" maxlength="6" style="text-align:center;font-size:1.4rem;letter-spacing:8px;font-weight:700" />
+      </div>
+      
+      <div class="form-row">
+        <label><span data-i18n="auth.newPassword">رمز جدید</span> <span>*</span></label>
+        <input type="password" name="newPassword" required data-i18n-placeholder="auth.passwordPlaceholder" dir="ltr" minlength="6" />
+      </div>
+      
+      <div class="form-row">
+        <label><span data-i18n="auth.confirmPassword">تکرار رمز جدید</span> <span>*</span></label>
+        <input type="password" name="confirmPassword" required data-i18n-placeholder="auth.confirmPlaceholder" dir="ltr" minlength="6" />
+      </div>
+      
+      <div class="form-message" id="resetMessage"></div>
+      
+      <button type="submit" class="modal-submit">
+        <span data-i18n="auth.changePassword">تغییر رمز</span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-bg" id="lightboxBg"></div>
+  <button class="lightbox-close" id="lightboxClose" aria-label="بستن">×</button>
+  
+  <div class="lightbox-content">
+    <div class="lightbox-image-wrap">
+      <div class="lightbox-motion"></div>
+      <img class="lightbox-image" id="lightboxImg" alt="" />
+    </div>
+    
+    <div class="lightbox-info">
+      <h2 id="lightboxTitle"></h2>
+      <div class="lightbox-meta" id="lightboxMeta"></div>
+      <p id="lightboxDesc"></p>
+      <div class="lightbox-links" id="lightboxLinks"></div>
+    </div>
+    
+    <div class="lightbox-storyboard" id="lightboxStoryboard"></div>
+  </div>
+  
+  <div class="lightbox-hint" id="lightboxHint" data-i18n="lightbox.hint">✨ حال و هوای موشن</div>
+</div>
+
+<!-- بررسی انتخاب زبان -->
+<script>
+(function(){
+  const saved = localStorage.getItem('selectedLanguage');
+  const fromWelcome = sessionStorage.getItem('fromWelcome');
+  
+  // اگه زبان انتخاب نشده و از welcome نیومده → برو welcome
+  if(!saved && !fromWelcome){
+    window.location.replace('welcome.html');
+  }
+  
+  // پاک کردن flag
+  sessionStorage.removeItem('fromWelcome');
+})();
+
+</script>
+<script>
+document.addEventListener('languageChanged', (e)=>{
+  const bismillah = document.getElementById('splashBismillah');
+  if(bismillah){
+    // اگه فارسی یا عربی → فونت بزرگ (﷽)
+    // اگه نه → فونت متوسط (متن)
+    if(e.detail.lang === 'fa' || e.detail.lang === 'ar'){
+      bismillah.style.fontSize = '3rem';
+    } else {
+      bismillah.style.fontSize = '1.6rem';
+    }
+  }
+});
+</script>
+<script src="js/i18n.js"></script>
+<script src="js/works.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

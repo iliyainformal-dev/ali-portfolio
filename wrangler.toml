@@ -1,0 +1,13 @@
+name = "ali-portfolio"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+[assets]
+directory = "."
+not_found_handling = "single-page-application"
+binding = "ASSETS"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "ali-portfolio-db"
+database_id = "8b1cd83b-3e47-4ba0-8919-807c8c271d3c"

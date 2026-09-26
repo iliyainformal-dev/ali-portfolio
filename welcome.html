@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Welcome — Ali Ghaemi</title>
+
+<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
+<link rel="stylesheet" href="css/welcome.css" />
+</head>
+<body>
+
+<!-- نقشه جهان (پشت صفحه) -->
+<div class="world-map" aria-hidden="true">
+  <svg viewBox="0 0 2000 1000" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    <use href="#world-map-svg" />
+  </svg>
+</div>
+
+<!-- درخشش طلایی -->
+<div class="glow-1"></div>
+<div class="glow-2"></div>
+<!-- بک‌دراپ برای dropdown -->
+<div class="dropdown-backdrop" id="dropdownBackdrop"></div>
+
+<!-- ستاره‌های پس‌زمینه -->
+<div class="stars" id="stars"></div>
+
+<!-- کارت اصلی -->
+<div class="welcome-card">
+
+  <!-- لوگو -->
+  <div class="world-map-wrap" id="worldMapWrap">
+  <div class="map-placeholder">🌍</div>
+</div>
+
+  <!-- عنوان -->
+  <h1 class="main-title" id="mainTitle">Welcome</h1>
+  <p class="sub-title" id="subTitle">Choose your country and language</p>
+
+  <!-- فیلد ۱: کشور -->
+  <div class="field">
+  <label class="field-label">
+    <span class="field-icon">🌍</span>
+    <span id="countryLabel">Country</span>
+  </label>
+  <div class="country-picker">
+    <div class="country-search-wrap">
+      <span class="search-icon">🔍</span>
+      <input 
+        type="text" 
+        id="countrySearch" 
+        class="country-search" 
+        placeholder="Search country..." 
+        autocomplete="off"
+      />
+      <button class="country-toggle" id="countryToggle">
+        <span id="selectedCountryText">— Select —</span>
+        <span class="select-arrow">▼</span>
+      </button>
+    </div>
+    <div class="country-dropdown" id="countryDropdown">
+      <div class="country-list" id="countryList"></div>
+    </div>
+  </div>
+</div>
+
+  <!-- فیلد ۲: زبان -->
+  <div class="field">
+    <label class="field-label">
+      <span class="field-icon">🗣️</span>
+      <span id="languageLabel">Language</span>
+    </label>
+    <div class="select-wrap">
+      <select id="languageSelect" class="field-select">
+        <option value="en">🇬🇧 English</option>
+        <option value="fa">🇮🇷 فارسی</option>
+        <option value="ar">🇸🇦 العربية</option>
+        <option value="ru">🇷🇺 Русский</option>
+        <option value="de">🇩🇪 Deutsch</option>
+        <option value="zh">🇨🇳 中文</option>
+        <option value="fr">🇫🇷 Français</option>
+      </select>
+      <span class="select-arrow">▼</span>
+    </div>
+  </div>
+
+  <!-- پیام خوش‌آمدید -->
+  <div class="greeting-wrap">
+    <div class="greeting-line"></div>
+    <div class="greeting" id="greeting">Welcome</div>
+    <div class="greeting-line"></div>
+  </div>
+
+  <!-- دکمه Next -->
+  <button class="next-btn" id="nextBtn">
+    <span id="nextBtnText">Next</span>
+    <span class="next-arrow">→</span>
+  </button>
+
+  <!-- فوتر -->
+  <div class="welcome-footer">
+    <span>Ali Ghaemi</span>
+    <span class="dot">•</span>
+    <span>alighaemi.art</span>
+  </div>
+
+</div>
+
+<script src="js/i18n.js"></script>
+<script>
+  // وقتی کاربر از welcome میاد، flag بذار
+  window.addEventListener('beforeunload', ()=>{
+    sessionStorage.setItem('fromWelcome', '1');
+  });
+</script>
+<script src="js/welcome.js"></script>
+</body>
+</html>

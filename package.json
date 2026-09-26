@@ -1,0 +1,11 @@
+{
+  "name": "ali-portfolio",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "translate": "node scripts/translate.js"
+  },
+  "dependencies": {
+    "@vitalets/google-translate-api": "^9.2.1"
+  }
+}

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>پروفایل من — علی قائمی</title>
+<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">علی<span>.</span></a>
+  <ul id="mainMenu">
+    <li><a href="index.html#about">درباره</a></li>
+    <li><a href="index.html#works">آثار</a></li>
+    <li><a href="about.html">داستان من</a></li>
+    <li><a href="contact.html">تماس</a></li>
+  </ul>
+  <div class="auth-buttons">
+    <div class="user-menu show">
+      <span class="user-greeting">سلام، <strong id="navUserName">...</strong></span>
+      <div class="user-avatar" id="navUserAvatar">?</div>
+      <button class="auth-btn" id="logoutBtn">خروج</button>
+    </div>
+  </div>
+  <button class="menu-toggle" id="menuToggle" aria-label="منو">☰</button>
+</nav>
+
+<!-- هدر پروفایل -->
+<header class="profile-hero">
+  <div class="hero-glow"></div>
+  
+  <div class="profile-hero-content">
+    <div class="profile-avatar-wrap">
+      <div class="profile-avatar" id="profileAvatar">?</div>
+      <button class="avatar-edit-btn" id="avatarEditBtn" title="تغییر عکس">📷</button>
+    </div>
+    
+    <h1 class="profile-name" id="profileName">...</h1>
+    <div class="profile-role" id="profileRole">...</div>
+    
+    <button class="btn-edit-profile" id="editProfileBtn">
+      ✏️ ویرایش پروفایل
+    </button>
+  </div>
+</header>
+
+<!-- اطلاعات پروفایل -->
+<section class="profile-section">
+  <div class="profile-container">
+    
+    <!-- اطلاعات شخصی -->
+    <div class="profile-card">
+      <h2 class="card-title">
+        <span class="card-icon">👤</span>
+        اطلاعات شخصی
+      </h2>
+      
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">📧 ایمیل</div>
+          <div class="info-value" id="infoEmail">-</div>
+        </div>
+        
+        <div class="info-item">
+          <div class="info-label">📱 شماره موبایل</div>
+          <div class="info-value" id="infoPhone">-</div>
+        </div>
+        
+        <div class="info-item">
+          <div class="info-label">🎂 سن</div>
+          <div class="info-value" id="infoAge">-</div>
+        </div>
+        
+        <div class="info-item">
+          <div class="info-label">👤 جنسیت</div>
+          <div class="info-value" id="infoGender">-</div>
+        </div>
+        
+        <div class="info-item">
+          <div class="info-label">🎭 نقش</div>
+          <div class="info-value" id="infoRole">-</div>
+        </div>
+        
+        <div class="info-item">
+          <div class="info-label">📅 تاریخ عضویت</div>
+          <div class="info-value" id="infoJoined">-</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- بیوگرافی -->
+    <div class="profile-card">
+      <h2 class="card-title">
+        <span class="card-icon">✍️</span>
+        درباره من
+      </h2>
+      
+      <div class="bio-content" id="bioContent">
+        <p class="bio-empty">هنوز بیوگرافی‌ای ننوشتی...</p>
+      </div>
+      
+      <button class="btn-small" id="editBioBtn">✏️ ویرایش بیوگرافی</button>
+    </div>
+    
+    <!-- ناحیه خطرناک -->
+    <div class="profile-card danger-card">
+      <h2 class="card-title">
+        <span class="card-icon">⚠️</span>
+        ناحیه خطرناک
+      </h2>
+      
+      <p class="danger-text">
+        حذف حساب کاربری <strong>غیرقابل بازگشت</strong> است. تمام اطلاعات، آثار و سابقه‌ات پاک میشه.
+      </p>
+      
+      <button class="btn-danger" id="deleteAccountBtn">
+        🗑️ حذف حساب کاربری
+      </button>
+    </div>
+    
+  </div>
+</section>
+
+<!-- ═══ MODAL ویرایش پروفایل ═══ -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <button class="modal-close" data-close>×</button>
+    
+    <div class="modal-header">
+      <h2>ویرایش پروفایل</h2>
+      <p>اطلاعاتت رو به‌روز کن</p>
+    </div>
+    
+    <form id="editForm" class="modal-form">
+      <div class="form-row">
+        <label>اسم کامل</label>
+        <input type="text" name="name" id="editName" required />
+      </div>
+      
+      <div class="form-grid-2">
+        <div class="form-row">
+          <label>سن</label>
+          <input type="number" name="age" id="editAge" min="10" max="100" />
+        </div>
+        
+        <div class="form-row">
+          <label>جنسیت</label>
+          <select name="gender" id="editGender">
+            <option value="">انتخاب کن</option>
+            <option value="male">مرد</option>
+            <option value="female">زن</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <label>نقش</label>
+        <select name="role" id="editRole">
+          <option value="artist">🎨 هنرمند</option>
+          <option value="student">📚 هنرجوی هنر</option>
+          <option value="lover">💙 دوست‌دار هنر</option>
+          <option value="gallery">🖼️ گالری‌دار</option>
+          <option value="buyer">🛒 خریدار آثار هنری</option>
+          <option value="other">✨ سایر</option>
+        </select>
+      </div>
+      
+      <div class="form-row">
+        <label>بیوگرافی</label>
+        <textarea name="bio" id="editBio" rows="4" placeholder="چند خط درباره خودت..." maxlength="500" style="resize:vertical;font-family:inherit"></textarea>
+      </div>
+      
+      <div class="form-message" id="editMessage"></div>
+      
+      <button type="submit" class="modal-submit">
+        <span>ذخیره تغییرات</span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ═══ MODAL تغییر آواتار ═══ -->
+<div class="modal-overlay" id="avatarModal">
+  <div class="modal">
+    <button class="modal-close" data-close>×</button>
+    
+    <div class="modal-header">
+      <h2>تغییر عکس پروفایل</h2>
+      <p>یه عکس انتخاب کن یا آواتار آماده</p>
+    </div>
+    
+    <!-- آپلود فایل -->
+    <div class="upload-area" id="uploadArea">
+      <input type="file" id="avatarFileInput" accept="image/*" style="display:none" />
+      <div class="upload-icon">📷</div>
+      <div class="upload-text">عکس رو بکش بذار اینجا یا کلیک کن</div>
+      <div class="upload-hint">حداکثر ۲ مگابایت — فقط JPG، PNG</div>
+    </div>
+    
+    <div class="avatar-divider">یا</div>
+    
+    <!-- آواتارهای آماده -->
+    <div class="preset-avatars" id="presetAvatars">
+      <button class="preset-avatar" data-color="1" style="--c1:#e63946;--c2:#d4a574">🎨</button>
+      <button class="preset-avatar" data-color="2" style="--c1:#7b2cbf;--c2:#e63946">🎭</button>
+      <button class="preset-avatar" data-color="3" style="--c1:#2c7bbf;--c2:#7b2cbf">🖼️</button>
+      <button class="preset-avatar" data-color="4" style="--c1:#d4a574;--c2:#e63946">✨</button>
+      <button class="preset-avatar" data-color="5" style="--c1:#4ade80;--c2:#2c7bbf">🌟</button>
+      <button class="preset-avatar" data-color="6" style="--c1:#f97316;--c2:#e63946">🔥</button>
+      <button class="preset-avatar" data-color="7" style="--c1:#ec4899;--c2:#7b2cbf">💜</button>
+      <button class="preset-avatar" data-color="8" style="--c1:#06b6d4;--c2:#2c7bbf">💎</button>
+    </div>
+    
+    <div class="form-message" id="avatarMessage"></div>
+  </div>
+</div>
+
+<!-- ═══ MODAL حذف حساب ═══ -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal">
+    <button class="modal-close" data-close>×</button>
+    
+    <div class="modal-header">
+      <h2 style="color:#ff5a5f">⚠️ حذف حساب کاربری</h2>
+      <p>این عمل غیرقابل بازگشته</p>
+    </div>
+    
+    <div class="danger-warning">
+      <p>اگه حساب کاربریت رو حذف کنی:</p>
+      <ul>
+        <li>❌ تمام اطلاعات شخصیت پاک میشه</li>
+        <li>❌ آثارت از سایت حذف میشه</li>
+        <li>❌ نمی‌تونی بازیابی کنی</li>
+      </ul>
+    </div>
+    
+    <form id="deleteForm" class="modal-form">
+      <div class="form-row">
+        <label>برای تایید، پسوردت رو وارد کن <span>*</span></label>
+        <input type="password" name="password" required placeholder="پسورد" dir="ltr" />
+      </div>
+      
+      <div class="form-message" id="deleteMessage"></div>
+      
+      <button type="submit" class="modal-submit" style="background:linear-gradient(135deg,#ff5a5f,#e63946)">
+        <span>بله، حسابم رو حذف کن</span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  ساخته شده با ❤️ توسط علی قائمی — © ۱۴۰۴
+</footer>
+
+<script src="js/main.js"></script>
+<script src="js/profile.js"></script>
+</body>
+</html>
