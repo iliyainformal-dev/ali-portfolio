@@ -2234,12 +2234,19 @@ body.loaded > *:not(.splash){
     font-size: 1rem;
   }
   
-  .lang-dropdown{
-    /* به راست align میشه که از کادر بیرون نزنه */
-    left: auto;
-    right: 0;
-    min-width: 160px;
-  }
+  /* برای RTL (فارسی، عربی) - از راست باز بشه */
+html[dir="rtl"] .lang-dropdown{
+  right: 0;
+  left: auto;
+  min-width: 160px;
+}
+
+/* برای LTR (انگلیسی، روسی، آلمانی، چینی، فرانسوی) - از چپ باز بشه */
+html[dir="ltr"] .lang-dropdown{
+  left: 0;
+  right: auto;
+  min-width: 160px;
+}
   
   .lang-dropdown button{
     padding: 8px 12px;
