@@ -4,105 +4,80 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Welcome — Ali Ghaemi</title>
-
 <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
-<link href="https://fonts.googleapis.com/css2?family=Allura&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="css/welcome.css" />
 </head>
 <body>
 
-<!-- ═══ BACKGROUND LAYERS (ثابت، پشت همه چیز) ═══ -->
-<div class="w-bg">
-  <canvas class="w-bg-canvas" id="bgCanvas"></canvas>
-  <div class="w-bg-glow-1"></div>
-  <div class="w-bg-glow-2"></div>
-  <div class="w-bg-map" id="bgMap"></div>
-  <div class="w-bg-vignette"></div>
+<div class="world-map" aria-hidden="true">
+  <svg viewBox="0 0 2000 1000" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    <use href="#world-map-svg" />
+  </svg>
 </div>
 
-<!-- ═══ SCROLL PROGRESS ═══ -->
-<div class="w-progress" id="wProgress"></div>
+<div class="glow-1"></div>
+<div class="glow-2"></div>
+<div class="stars" id="stars"></div>
 
-<!-- ═══════════ SECTION 1: HERO ═══════════ -->
-<header class="w-section w-hero" data-section="hero">
-  <div class="w-hero-content">
-    <span class="w-tag">Portfolio · MMXXV</span>
-    <h1 class="w-name">علی قائمی</h1>
-    <p class="w-signature">Ali Ghaemi</p>
-    <p class="w-subtitle">هنرمند · طراح · تصویرساز</p>
-  </div>
-  
-  <div class="w-scroll-hint">
-    <span>SCROLL</span>
-  </div>
-</header>
+<div class="welcome-card">
 
-<!-- ═══════════ SECTION 2: SELECTION ═══════════ -->
-<section class="w-section w-select" data-section="select">
-  <div class="w-select-content">
-    
-    <span class="w-step reveal-item">۰۱ / ۰۱ — WELCOME</span>
-    <h2 class="w-title reveal-item">
-      خوش آمدی.<br>
-      <span class="w-title-accent">کشور و زبانت رو انتخاب کن.</span>
-    </h2>
-    <p class="w-desc reveal-item">
-      تا محتوا رو به زبان خودت ببینی.
-    </p>
-    
-    <!-- فیلد کشور -->
-    <div class="w-field reveal-item">
-      <label class="w-field-label">
-        <span>🌍</span>
-        <span id="countryLabel">کشور شما</span>
-      </label>
-      <button class="w-country-btn" id="countryPickerBtn" type="button">
-        <span class="w-country-flag" id="pickerFlag">🌍</span>
-        <span class="w-country-name" id="pickerName">— انتخاب کنید —</span>
-        <span class="w-country-arrow">▼</span>
-      </button>
-    </div>
-    
-    <!-- فیلد زبان -->
-    <div class="w-field reveal-item">
-      <label class="w-field-label">
-        <span>🗣️</span>
-        <span id="languageLabel">زبان شما</span>
-      </label>
-      <div class="w-select-wrap">
-        <select id="languageSelect" class="w-lang-select">
-          <option value="fa">🇮🇷 فارسی</option>
-          <option value="en">🇬🇧 English</option>
-          <option value="ar">🇸🇦 العربية</option>
-          <option value="ru">🇷🇺 Русский</option>
-          <option value="de">🇩🇪 Deutsch</option>
-          <option value="zh">🇨🇳 中文</option>
-          <option value="fr">🇫🇷 Français</option>
-        </select>
-        <span class="w-select-arrow">▼</span>
-      </div>
-    </div>
-    
-    <!-- CTA -->
-    <button class="w-cta reveal-item" id="nextBtn">
-      <span id="nextBtnText">ورود به گالری</span>
-      <span class="w-cta-arrow">←</span>
+  <div class="world-map-wrap" id="worldMapWrap">
+    <div class="map-placeholder">🌍</div>
+  </div>
+
+  <h1 class="main-title" id="mainTitle">Welcome</h1>
+  <p class="sub-title" id="subTitle">Choose your country and language</p>
+
+  <div class="field">
+    <label class="field-label">
+      <span class="field-icon">🌍</span>
+      <span id="countryLabel">Country</span>
+    </label>
+    <button class="country-picker-btn" id="countryPickerBtn" type="button">
+      <span class="cp-flag" id="pickerFlag">🌍</span>
+      <span class="cp-name" id="pickerName">— Select —</span>
+      <span class="cp-arrow">▼</span>
     </button>
-    
-    <!-- Greeting -->
-    <div class="w-greeting reveal-item" id="greeting">خوش آمدید</div>
-    
   </div>
-</section>
 
-<!-- ═══ FOOTER ═══ -->
-<footer class="w-footer">
-  <span>Ali Ghaemi</span>
-  <span class="dot">•</span>
-  <span>alighaemi.art</span>
-</footer>
+  <div class="field">
+    <label class="field-label">
+      <span class="field-icon">🗣️</span>
+      <span id="languageLabel">Language</span>
+    </label>
+    <div class="select-wrap">
+      <select id="languageSelect" class="field-select">
+        <option value="en">🇬🇧 English</option>
+        <option value="fa">🇮🇷 فارسی</option>
+        <option value="ar">🇸🇦 العربية</option>
+        <option value="ru">🇷🇺 Русский</option>
+        <option value="de">🇩🇪 Deutsch</option>
+        <option value="zh">🇨🇳 中文</option>
+        <option value="fr">🇫🇷 Français</option>
+      </select>
+      <span class="select-arrow">▼</span>
+    </div>
+  </div>
 
-<!-- ═══ MODAL انتخاب کشور ═══ -->
+  <div class="greeting-wrap">
+    <div class="greeting-line"></div>
+    <div class="greeting" id="greeting">Welcome</div>
+    <div class="greeting-line"></div>
+  </div>
+
+  <button class="next-btn" id="nextBtn">
+    <span id="nextBtnText">Next</span>
+    <span class="next-arrow">→</span>
+  </button>
+
+  <div class="welcome-footer">
+    <span>Ali Ghaemi</span>
+    <span class="dot">•</span>
+    <span>alighaemi.art</span>
+  </div>
+
+</div>
+
 <div class="country-modal-overlay" id="countryModalOverlay">
   <div class="country-modal">
     <div class="country-modal-head">
@@ -119,7 +94,7 @@
 
 <script src="js/i18n.js"></script>
 <script>
-  window.addEventListener('beforeunload', () => {
+  window.addEventListener('beforeunload', ()=>{
     sessionStorage.setItem('fromWelcome', '1');
   });
 </script>
