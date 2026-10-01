@@ -553,7 +553,9 @@ html[dir="rtl"] .country-search-input{
   flex:1;
   overflow-y:auto;
   padding:8px;
-  min-height:200px;
+  max-height:340px;          /* ← ارتفاع ثابت */
+  min-height:0;              /* ← مهم! */
+  overscroll-behavior:contain; /* ← جلوگیری از اسکرول صفحه پشت */
 }
 .country-modal-list::-webkit-scrollbar{width:6px}
 .country-modal-list::-webkit-scrollbar-track{background:transparent}
