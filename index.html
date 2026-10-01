@@ -353,20 +353,17 @@
 </div>
 
 <!-- بررسی انتخاب زبان -->
+<!-- بررسی welcome -->
 <script>
 (function(){
-  const saved = localStorage.getItem('selectedLanguage');
   const fromWelcome = sessionStorage.getItem('fromWelcome');
   
-  // اگه زبان انتخاب نشده و از welcome نیومده → برو welcome
-  if(!saved && !fromWelcome){
+  // هر بار کاربر تازه سایت رو باز کرد → welcome بیاد
+  // فقط اگه از خود welcome اومده باشه، index رو نشون بده
+  if(!fromWelcome){
     window.location.replace('welcome.html');
   }
-  
-  // پاک کردن flag
-  sessionStorage.removeItem('fromWelcome');
 })();
-
 </script>
 <script>
 document.addEventListener('languageChanged', (e)=>{
