@@ -456,7 +456,7 @@ html[dir="ltr"] .country-picker-btn{
 .country-modal{
   width:100%;
   max-width:420px;
-  max-height:80vh;
+  max-height:90vh;    /* ← 80 → 90 */
   background:#0f0f14;
   border:1px solid rgba(212,165,116,.2);
   border-radius:20px;
@@ -550,12 +550,13 @@ html[dir="rtl"] .country-search-input{
 
 /* لیست کشورها داخل modal */
 .country-modal-list{
-  flex:1;
+  flex:1 1 auto;
   overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
   padding:8px;
-  max-height:340px;          /* ← ارتفاع ثابت */
-  min-height:0;              /* ← مهم! */
-  overscroll-behavior:contain; /* ← جلوگیری از اسکرول صفحه پشت */
+  min-height:0;
+  max-height:60vh;
+  overscroll-behavior:contain;
 }
 .country-modal-list::-webkit-scrollbar{width:6px}
 .country-modal-list::-webkit-scrollbar-track{background:transparent}
