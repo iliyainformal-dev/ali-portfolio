@@ -21,17 +21,16 @@
 <div class="glow-1"></div>
 <div class="glow-2"></div>
 
-
 <!-- ستاره‌های پس‌زمینه -->
 <div class="stars" id="stars"></div>
 
 <!-- کارت اصلی -->
 <div class="welcome-card">
 
-  <!-- لوگو -->
+  <!-- لوگو / نقشه کوچیک -->
   <div class="world-map-wrap" id="worldMapWrap">
-  <div class="map-placeholder">🌍</div>
-</div>
+    <div class="map-placeholder">🌍</div>
+  </div>
 
   <!-- عنوان -->
   <h1 class="main-title" id="mainTitle">Welcome</h1>
@@ -39,30 +38,16 @@
 
   <!-- فیلد ۱: کشور -->
   <div class="field">
-  <label class="field-label">
-    <span class="field-icon">🌍</span>
-    <span id="countryLabel">Country</span>
-  </label>
-  <div class="country-picker">
-    <div class="country-search-wrap">
-      <span class="search-icon">🔍</span>
-      <input 
-        type="text" 
-        id="countrySearch" 
-        class="country-search" 
-        placeholder="Search country..." 
-        autocomplete="off"
-      />
-      <button class="country-toggle" id="countryToggle">
-        <span id="selectedCountryText">— Select —</span>
-        <span class="select-arrow">▼</span>
-      </button>
-    </div>
-    <div class="country-dropdown" id="countryDropdown">
-      <div class="country-list" id="countryList"></div>
-    </div>
+    <label class="field-label">
+      <span class="field-icon">🌍</span>
+      <span id="countryLabel">Country</span>
+    </label>
+    <button class="country-picker-btn" id="countryPickerBtn" type="button">
+      <span class="cp-flag" id="pickerFlag">🌍</span>
+      <span class="cp-name" id="pickerName">— Select —</span>
+      <span class="cp-arrow">▼</span>
+    </button>
   </div>
-</div>
 
   <!-- فیلد ۲: زبان -->
   <div class="field">
@@ -104,6 +89,27 @@
     <span>alighaemi.art</span>
   </div>
 
+</div>
+
+<!-- ═══ Modal انتخاب کشور ═══ -->
+<div class="country-modal-overlay" id="countryModalOverlay">
+  <div class="country-modal">
+    <div class="country-modal-head">
+      <h3 id="countryModalTitle">🌍 انتخاب کشور</h3>
+      <button class="country-modal-close" id="countryModalClose" type="button" aria-label="بستن">×</button>
+    </div>
+    <div class="country-modal-search-wrap">
+      <span class="search-icon">🔍</span>
+      <input 
+        type="text" 
+        id="countrySearch" 
+        class="country-search-input" 
+        placeholder="Search country..." 
+        autocomplete="off" 
+      />
+    </div>
+    <div class="country-modal-list" id="countryList"></div>
+  </div>
 </div>
 
 <script src="js/i18n.js"></script>
