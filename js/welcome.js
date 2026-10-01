@@ -64,6 +64,11 @@ const SELECT_TEXTS = {
   fa:'— انتخاب کنید —', en:'— Select —', ar:'— اختر —',
   ru:'— Выберите —', de:'— Auswählen —', zh:'— 选择 —', fr:'— Sélectionner —'
 };
+const MODAL_TITLES = {
+  fa:'🌍 انتخاب کشور', en:'🌍 Select Country', ar:'🌍 اختر البلد',
+  ru:'🌍 Выберите страну', de:'🌍 Land wählen', zh:'🌍 选择国家',
+  fr:'🌍 Choisir un pays'
+};
 
 // وضعیت
 let COUNTRIES = {};
@@ -153,11 +158,11 @@ function renderCountryList(filter = ''){
   
   // کلیک روی هر کشور
   list.querySelectorAll('.country-item').forEach(item => {
-  item.addEventListener('click', (e) => {
-    e.stopPropagation();
-    selectCountry(item.dataset.code);
+    item.addEventListener('click', (e) => {
+      e.stopPropagation();
+      selectCountry(item.dataset.code);
+    });
   });
-});
 }
 
 /* ─── انتخاب کشور ─── */
@@ -166,61 +171,67 @@ function selectCountry(code){
   const countryName = COUNTRIES[code];
   const flag = FLAGS[code] || '🌍';
   
-  // آپدیت دکمه
-  const btnText = document.getElementById('selectedCountryText');
-  if(btnText){
-    btnText.textContent = `${flag} ${code === 'IR' ? 'ایران — Iran' : countryName}`;
+  // آپدیت دکمه‌ی نمایش کشور
+  const pickerFlag = document.getElementById('pickerFlag');
+  const pickerName = document.getElementById('pickerName');
+  
+  if(pickerFlag) pickerFlag.textContent = flag;
+  if(pickerName){
+    pickerName.textContent = (code === 'IR') ? 'ایران — Iran' : countryName;
   }
   
   // پیشنهاد زبان
   const suggestedLang = LANG_BY_COUNTRY[code] || 'en';
   selectedLanguage = suggestedLang;
-  document.getElementById('languageSelect').value = suggestedLang;
+  const langSelect = document.getElementById('languageSelect');
+  if(langSelect) langSelect.value = suggestedLang;
   
   updateTexts(suggestedLang);
-    // Highlight کردن کشور روی نقشه
+  
+  // Highlight کردن کشور روی نقشه
   if(typeof highlightCountry === 'function'){
     highlightCountry(code);
   }
   
-  
-  // بستن dropdown
-  document.getElementById('countryDropdown').classList.remove('open');
-  document.getElementById('dropdownBackdrop').classList.remove('show');
+  // بستن modal
+  closeCountryModal();
   
   // آپدیت لیست (برای نمایش ✓)
-  renderCountryList(document.getElementById('countrySearch').value);
+  const searchVal = document.getElementById('countrySearch')?.value || '';
+  renderCountryList(searchVal);
 }
 
 /* ─── Event Listeners ─── */
 function setupEvents(){
+  const pickerBtn = document.getElementById('countryPickerBtn');
+  const modalOverlay = document.getElementById('countryModalOverlay');
+  const modalClose = document.getElementById('countryModalClose');
   const search = document.getElementById('countrySearch');
-  const toggle = document.getElementById('countryToggle');
-  const dropdown = document.getElementById('countryDropdown');
   const languageSelect = document.getElementById('languageSelect');
   const nextBtn = document.getElementById('nextBtn');
   
-  // باز/بسته کردن dropdown
-  toggle?.addEventListener('click', () => {
-  const isOpen = dropdown.classList.toggle('open');
-  document.getElementById('dropdownBackdrop').classList.toggle('show', isOpen);
-  if(isOpen){
-    setTimeout(() => search.focus(), 100);
-  }
-});
+  // باز کردن modal
+  pickerBtn?.addEventListener('click', openCountryModal);
+  
+  // بستن با دکمه ×
+  modalClose?.addEventListener('click', closeCountryModal);
+  
+  // بستن با کلیک رو پس‌زمینه
+  modalOverlay?.addEventListener('click', (e) => {
+    if(e.target === modalOverlay) closeCountryModal();
+  });
+  
+  // بستن با Escape
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && modalOverlay?.classList.contains('open')){
+      closeCountryModal();
+    }
+  });
   
   // سرچ
   search?.addEventListener('input', (e) => {
     renderCountryList(e.target.value);
   });
-  
-  // بستن با کلیک بیرون
-  document.addEventListener('click', (e) => {
-  if(!e.target.closest('.country-picker')){
-    dropdown?.classList.remove('open');
-    document.getElementById('dropdownBackdrop')?.classList.remove('show');
-  }
-});
   
   // تغییر زبان
   languageSelect?.addEventListener('change', (e) => {
@@ -237,10 +248,37 @@ function setupEvents(){
     
     localStorage.setItem('selectedLanguage', selectedLanguage);
     localStorage.setItem('selectedCountry', selectedCountry);
-    
     sessionStorage.setItem('fromWelcome', '1');
-window.location.href = 'index.html';
+    window.location.href = 'index.html';
   });
+}
+
+/* ─── باز کردن modal ─── */
+function openCountryModal(){
+  const overlay = document.getElementById('countryModalOverlay');
+  const search = document.getElementById('countrySearch');
+  
+  if(!overlay) return;
+  
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  
+  // ریست سرچ
+  if(search){
+    search.value = '';
+    setTimeout(() => search.focus(), 250);
+  }
+  
+  renderCountryList('');
+}
+
+/* ─── بستن modal ─── */
+function closeCountryModal(){
+  const overlay = document.getElementById('countryModalOverlay');
+  if(!overlay) return;
+  
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
 }
 
 /* ─── آپدیت متن‌ها ─── */
@@ -252,6 +290,7 @@ function updateTexts(lang){
   const languageLabel = document.getElementById('languageLabel');
   const nextBtnText = document.getElementById('nextBtnText');
   const search = document.getElementById('countrySearch');
+  const modalTitle = document.getElementById('countryModalTitle');
   
   if(greeting) greeting.classList.add('changing');
   
@@ -263,11 +302,12 @@ function updateTexts(lang){
     if(languageLabel) languageLabel.textContent = LANGUAGE_LABELS[lang] || LANGUAGE_LABELS.en;
     if(nextBtnText) nextBtnText.textContent = NEXT_TEXTS[lang] || NEXT_TEXTS.en;
     if(search) search.placeholder = SEARCH_PLACEHOLDERS[lang] || SEARCH_PLACEHOLDERS.en;
+    if(modalTitle) modalTitle.textContent = MODAL_TITLES[lang] || MODAL_TITLES.en;
     
-    // دکمه انتخاب کشور
+    // دکمه انتخاب کشور (اگه هنوز چیزی انتخاب نشده)
     if(!selectedCountry){
-      const btnText = document.getElementById('selectedCountryText');
-      if(btnText) btnText.textContent = SELECT_TEXTS[lang] || SELECT_TEXTS.en;
+      const pickerName = document.getElementById('pickerName');
+      if(pickerName) pickerName.textContent = SELECT_TEXTS[lang] || SELECT_TEXTS.en;
     }
     
     // RTL/LTR
@@ -302,6 +342,7 @@ async function detectCountry(){
     updateTexts('en');
   }
 }
+
 /* ═══════════════════════════════════════════
    🗺️ لود کردن نقشه جهان
    ═══════════════════════════════════════════ */
