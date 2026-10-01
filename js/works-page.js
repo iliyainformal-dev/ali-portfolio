@@ -55,22 +55,26 @@
       // رندر کارت‌ها با متن از content
       grid.innerHTML = works.map(w => {
         const text = contentData[w.id] || {};
-        const title = text.title || `اثر ${w.id}`;
-        const desc = text.desc || '';
+        const title = text.title || '';
+const desc = text.desc || '';
         const catLabel = getCategoryLabel(w.category);
         
-        return `
-          <div class="art"
-               data-title="${title}"
-               data-desc="${desc}"
-               data-category="${catLabel}"
-               data-year="${w.year}"
-               data-tools="${w.tools}"
-               data-insta="${w.insta || ''}">
-            <img src="${w.image}" alt="${title}" loading="lazy" />
-            <div class="cap">${title}<small>${catLabel} · ${w.year}</small></div>
-          </div>
-        `;
+        const capTitle = title 
+  ? `<div class="cap">${title}<small>${catLabel} · ${w.year}</small></div>`
+  : `<div class="cap cap-no-title"><small>${catLabel} · ${w.year}</small></div>`;
+
+return `
+  <div class="art"
+       data-title="${title || catLabel}"
+       data-desc="${desc}"
+       data-category="${catLabel}"
+       data-year="${w.year}"
+       data-tools="${w.tools}"
+       data-insta="${w.insta || ''}">
+    <img src="${w.image}" alt="${title || catLabel}" loading="lazy" />
+    ${capTitle}
+  </div>
+`;
       }).join('');
     });
     
