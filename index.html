@@ -8,6 +8,8 @@
 <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
 <link href="https://fonts.googleapis.com/css2?family=Allura&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/featured-ring.css" />   ← این
 </head>
 <body>
 
@@ -131,7 +133,15 @@
     <p data-i18n="works.desc">مجموعه‌ای از کارها در سه دسته‌بندی: دیجیتال، سنتی و اسکچ.</p>
   </div>
   
-  <div class="gallery" id="featuredGallery"></div>
+<div class="featured-ring" id="featuredRing">
+  <div class="fr-stage" id="frStage">
+    <div class="fr-ring" id="frRing"></div>
+  </div>
+  <div class="fr-floor"></div>
+  <div class="fr-info">
+    <span class="fr-count" id="frCount"></span>
+  </div>
+</div>
   
   <div class="center-btn" style="text-align:center;margin-top:50px">
     <a href="works.html" class="btn btn-ghost" style="padding:14px 32px;font-size:.95rem" data-i18n="works.viewAll">
@@ -384,6 +394,8 @@ document.addEventListener('languageChanged', (e)=>{
 <script src="js/main.js"></script>
 <script src="js/main.js"></script>
 <script src="js/motion.js" defer></script>
+<script src="js/motion.js" defer></script>
+<script src="js/featured-ring.js" defer></script>   ← این
 </body>
 </body>
 </html>

@@ -1,0 +1,108 @@
+/* ═══════════════════════════════════════════
+   🎡 Featured Ring Gallery
+   ═══════════════════════════════════════════ */
+
+.featured-ring{
+  position:relative;
+  width:100%;
+  max-width:1100px;
+  margin:0 auto;
+  padding:20px 0 80px;
+}
+
+.fr-stage{
+  position:relative;
+  width:100%;
+  height:440px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  perspective:1500px;
+  cursor:grab;
+  touch-action:pan-y;
+  user-select:none;
+  -webkit-user-select:none;
+}
+.fr-stage.drag{cursor:grabbing}
+
+.fr-ring{
+  position:relative;
+  width:200px;
+  height:260px;
+  transform-style:preserve-3d;
+  will-change:transform;
+}
+
+.fr-card{
+  position:absolute;
+  inset:0;
+  border-radius:14px;
+  overflow:hidden;
+  cursor:pointer;
+  background:linear-gradient(135deg,hsl(var(--hue) 70% 38%),hsl(calc(var(--hue) + 50) 60% 18%));
+  box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 0 1px rgba(212,165,116,.25);
+}
+
+.fr-card img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  pointer-events:none;
+  -webkit-user-drag:none;
+}
+
+.fr-card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(120deg,transparent 35%,rgba(255,255,255,.14) 50%,transparent 65%);
+  transform:translateX(-120%);
+  transition:transform .9s;
+  pointer-events:none;
+}
+.fr-card.front::after{transform:translateX(120%)}
+.fr-card.front{
+  box-shadow:0 30px 80px rgba(0,0,0,.7),0 0 0 2px #d4a574,0 0 50px rgba(212,165,116,.35);
+}
+
+.fr-floor{
+  position:absolute;
+  left:50%;
+  bottom:30px;
+  width:min(900px,90vw);
+  height:200px;
+  transform:translateX(-50%) rotateX(75deg);
+  pointer-events:none;
+  background:radial-gradient(ellipse,rgba(212,165,116,.25),rgba(230,57,70,.1) 40%,transparent 70%);
+  filter:blur(10px);
+}
+
+.fr-info{
+  position:absolute;
+  bottom:8px;
+  left:0;
+  right:0;
+  text-align:center;
+  pointer-events:none;
+  z-index:2;
+}
+.fr-count{
+  display:inline-block;
+  padding:6px 18px;
+  background:rgba(15,15,20,.6);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border:1px solid rgba(212,165,116,.2);
+  border-radius:100px;
+  color:#d4a574;
+  font-size:.8rem;
+  font-weight:600;
+  letter-spacing:1px;
+}
+
+@media(max-width:700px){
+  .fr-stage{height:340px}
+  .fr-ring{width:150px;height:195px}
+  .fr-floor{bottom:20px;height:140px}
+}
