@@ -1,5 +1,10 @@
 /* ═══════════════════════════════════════════
-   🌍 motion.js — کره زمین سه‌بعدی + tilt گالری
+   🌍 motion.js — کره زمین سه‌بعدی (نسخه‌ی ۲) + tilt گالری
+   - نقشه‌ی قاره‌ها و مرزهای کشورها روی کره (ساخته‌شده با Canvas، بدون عکس آماده)
+   - کشوری که کاربر انتخاب کرده روشن و درخشان میشه + چشمک‌زن (beacon)
+   - کره به سمت کشور کاربر می‌چرخه، با موس/ژیروسکوپ زنده‌ست
+   - ستاره، هاله‌ی جو، مدار و ماهواره
+   برای خاموش‌کردن: خط <script src="js/motion.js"> رو از index.html پاک کن.
    ═══════════════════════════════════════════ */
 (function(){
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -8,8 +13,9 @@
 
   const css = document.createElement('style');
   css.textContent = `
-    .hero-3d{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0;transition:opacity 1.6s ease}
+    .hero-3d{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0;transition:opacity 2s ease}
     .hero-3d.on{opacity:1}
+    @media(max-width:700px){.hero-3d.on{opacity:.45}}
     .hero > :not(.hero-glow):not(.hero-3d){position:relative;z-index:1}
     .art{will-change:transform;transition:transform .25s ease-out, box-shadow .25s}
     .art.tilting{transition:transform .08s linear;box-shadow:0 20px 50px rgba(0,0,0,.55),0 0 0 1px rgba(212,165,116,.25)}
@@ -33,59 +39,92 @@
     document.addEventListener('mouseleave', () => { reset(cur); cur = null; });
   }
 
-  /* ── کره زمین سه‌بعدی ── */
   const hero = document.querySelector('.hero');
   if (!hero) return;
 
+  /* ── لود Three.js و بعد داده‌ی کشورها ── */
   const s = document.createElement('script');
   s.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
-  s.onload = () => { try { startScene(); } catch (err) { console.warn('3D globe disabled:', err); } };
+  s.onload = async () => {
+    const geo = await loadCountries();          // اگه لود نشد null میشه و کره‌ی ساده نشون میده
+    try { startScene(geo); } catch (err) { console.warn('3D globe disabled:', err); }
+  };
   document.head.appendChild(s);
 
-  /* ── مختصات کشورها [lat, lng] ── */
-  const COORDS = {
-    IR:[32.42,53.68],AF:[33.93,67.70],TJ:[38.86,71.27],
-    SA:[23.88,45.07],AE:[23.42,53.84],EG:[26.82,30.80],
-    DZ:[28.03,1.65],MA:[31.79,-7.09],IQ:[33.22,43.67],
-    JO:[30.58,36.23],KW:[29.31,47.48],LB:[33.85,35.86],
-    LY:[26.33,17.22],OM:[21.51,55.92],PS:[31.95,35.23],
-    QA:[25.35,51.18],SD:[12.86,30.21],SY:[34.80,38.99],
-    TN:[33.88,9.53],YE:[15.55,48.51],BH:[25.93,50.63],
-    RU:[61.52,105.31],BY:[53.70,27.95],KZ:[48.01,66.92],
-    KG:[41.20,74.76],UZ:[41.37,64.58],TM:[38.96,59.55],
-    DE:[51.16,10.45],AT:[47.51,14.55],CH:[46.81,8.22],
-    LI:[47.16,9.55],LU:[49.81,6.12],
-    CN:[35.86,104.19],TW:[23.69,120.96],HK:[22.39,114.10],
-    MO:[22.19,113.54],SG:[1.35,103.81],JP:[36.20,138.25],
-    KR:[35.90,127.76],MN:[46.86,103.84],
-    FR:[46.22,2.21],BE:[50.50,4.46],MC:[43.73,7.42],
-    SN:[14.49,-14.45],CI:[7.54,-5.54],
-    CA:[56.13,-106.34],US:[37.09,-95.71],GB:[55.37,-3.43],
-    AU:[-25.27,133.77],NZ:[-40.90,174.88],IE:[53.41,-8.24],
-    ZA:[-30.55,22.93],IN:[20.59,78.96],PK:[30.37,69.34],
-    NG:[9.08,8.67],KE:[-0.02,37.90],ET:[9.14,40.48],
-    TZ:[-6.36,34.88],GH:[7.94,-1.02],
-    IT:[41.87,12.56],ES:[40.46,-3.74],PT:[39.39,-8.22],
-    NL:[52.13,5.29],SE:[60.12,18.64],NO:[60.47,8.46],
-    DK:[56.26,9.50],FI:[61.92,25.74],PL:[51.91,19.14],
-    GR:[39.07,21.82],TR:[38.96,35.24],IL:[31.04,34.85],
-    TH:[15.87,100.99],VN:[14.05,108.27],MY:[4.21,101.97],
-    ID:[-0.78,113.92],PH:[12.87,121.77],
-    BR:[-14.23,-51.92],AR:[-38.41,-63.61],MX:[23.63,-102.55],
-    CL:[-35.67,-71.54],CO:[4.57,-74.29],PE:[-9.19,-75.01],
-    VE:[6.42,-66.58],EC:[-1.83,-78.18],CU:[21.52,-77.78],
-    GT:[15.78,-90.23],CR:[9.74,-83.75],PA:[8.53,-80.78],
-    DO:[18.73,-70.16],JM:[18.10,-77.29],HT:[18.97,-72.28],
-    UA:[48.37,31.16],RO:[45.94,24.96],BG:[42.73,25.48],
-    CZ:[49.81,15.47],HU:[47.16,19.50],HR:[45.10,15.20],
-    RS:[44.01,21.00],GE:[42.31,43.35],AM:[40.06,45.03],
-    AZ:[40.14,47.57],IS:[64.96,-19.02],MT:[35.93,14.37],
-    CY:[35.12,33.42],NP:[28.39,84.12],BD:[23.68,90.35],
-    LK:[7.87,80.77],MM:[21.91,95.96],KH:[12.57,104.99],
-    LA:[19.86,102.50],BN:[4.54,114.73],FJ:[-17.71,178.07]
-  };
+  async function loadCountries(){
+    const urls = [
+      'https://cdn.jsdelivr.net/gh/nvkelso/natural-earth-vector@master/geojson/ne_110m_admin_0_countries.geojson',
+      'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson'
+    ];
+    for (const u of urls) {
+      try { const r = await fetch(u); if (r.ok) return await r.json(); } catch (e) {}
+    }
+    console.warn('country map data not loaded');
+    return null;
+  }
 
-  function startScene(){
+  const codeOf = f => (f.properties.ISO_A2_EH && f.properties.ISO_A2_EH !== '-99') ? f.properties.ISO_A2_EH : f.properties.ISO_A2;
+  const polysOf = f => f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates;
+
+  /* ── ساخت بافت نقشه با Canvas (equirectangular) ── */
+  function drawMaps(geo, W, H, selected){
+    const base = document.createElement('canvas'); base.width = W; base.height = H;
+    const hi   = document.createElement('canvas'); hi.width = W; hi.height = H;
+    const c = base.getContext('2d'), h = hi.getContext('2d');
+    const px = (lng, lat) => [(lng + 180) / 360 * W, (90 - lat) / 180 * H];
+    const trace = (ctx, f) => {
+      ctx.beginPath();
+      polysOf(f).forEach(poly => poly.forEach(ring => {
+        ring.forEach(([lng, lat], i) => { const [x, y] = px(lng, lat); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+        ctx.closePath();
+      }));
+    };
+
+    // اقیانوس
+    const og = c.createLinearGradient(0, 0, 0, H);
+    og.addColorStop(0, '#0d0d18'); og.addColorStop(.5, '#0a0a12'); og.addColorStop(1, '#0d0d18');
+    c.fillStyle = og; c.fillRect(0, 0, W, H);
+
+    // شبکه‌ی طول و عرض جغرافیایی
+    c.strokeStyle = 'rgba(212,165,116,.07)'; c.lineWidth = W / 2400;
+    for (let lng = -180; lng <= 180; lng += 15) { const [x] = px(lng, 0); c.beginPath(); c.moveTo(x, 0); c.lineTo(x, H); c.stroke(); }
+    for (let lat = -75; lat <= 75; lat += 15)   { const [, y] = px(0, lat); c.beginPath(); c.moveTo(0, y); c.lineTo(W, y); c.stroke(); }
+
+    if (!geo) return { base, hi };
+    const lw = W / 2800;
+
+    // خشکی‌ها (با گرادیان گرم) + درخشش ساحل
+    geo.features.forEach(f => {
+      if (f.properties.ADMIN === 'Antarctica') { trace(c, f); c.fillStyle = '#17151a'; c.fill(); return; }
+      trace(c, f);
+      c.fillStyle = '#241e18'; c.fill();
+    });
+    c.save(); c.shadowColor = 'rgba(212,165,116,.55)'; c.shadowBlur = W / 400;
+    c.strokeStyle = 'rgba(212,165,116,.28)'; c.lineWidth = lw * 1.6;
+    geo.features.forEach(f => { trace(c, f); c.stroke(); });
+    c.restore();
+    // مرز کشورها (نازک و واضح)
+    c.strokeStyle = 'rgba(212,165,116,.55)'; c.lineWidth = lw;
+    geo.features.forEach(f => { trace(c, f); c.stroke(); });
+
+    // کشور انتخابی: پر شدن رنگی + خط درخشان
+    let center = null;
+    geo.features.filter(f => selected && codeOf(f) === selected).forEach(f => {
+      trace(h, f);
+      const g = h.createLinearGradient(0, 0, W, H);
+      g.addColorStop(0, 'rgba(230,57,70,.78)'); g.addColorStop(1, 'rgba(212,165,116,.7)');
+      h.fillStyle = g; h.fill();
+      h.save(); h.shadowColor = '#ffd9a0'; h.shadowBlur = W / 220;
+      h.strokeStyle = '#ffe2b8'; h.lineWidth = lw * 3.2; h.stroke(); h.restore();
+      // مرکز = وسط کادر بزرگ‌ترین تکه‌ی کشور
+      const big = polysOf(f).reduce((a, b) => (b[0].length > a[0].length ? b : a));
+      const lngs = big[0].map(p => p[0]), lats = big[0].map(p => p[1]);
+      center = [(Math.min(...lats) + Math.max(...lats)) / 2, (Math.min(...lngs) + Math.max(...lngs)) / 2];
+    });
+    return { base, hi, center };
+  }
+
+  function startScene(geo){
     const small = innerWidth < 700;
     const renderer = new THREE.WebGLRenderer({ alpha:true, antialias:!small });
     renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
@@ -93,123 +132,106 @@
     hero.prepend(renderer.domElement);
 
     const scene = new THREE.Scene();
-    const cam = new THREE.PerspectiveCamera(50, 1, 0.1, 200);
-    cam.position.z = 16;
+    const cam = new THREE.PerspectiveCamera(45, 1, 0.1, 200);
+    cam.position.z = 17;
+    const R = 3.8;
+    const aniso = renderer.capabilities.getMaxAnisotropy();
 
-    const R = 3.6; // شعاع کره
+    const root = new THREE.Group(); scene.add(root);     // جای کل کره (چپ/راست)
+    const earth = new THREE.Group(); root.add(earth);    // این می‌چرخه
 
-    /* ── کره زمین ── */
-    const loader = new THREE.TextureLoader();
-    loader.crossOrigin = 'anonymous';
-    const earthTex = loader.load(
-      'https://cdn.jsdelivr.net/npm/three-globe@2.24.10/example/img/earth-dark.jpg',
-      undefined,
-      undefined,
-      () => { console.warn('earth texture failed'); }
-    );
+    const selected = localStorage.getItem('selectedCountry');
+    const maps = drawMaps(geo, small ? 2048 : 4096, small ? 1024 : 2048, selected);
+    const mkTex = cv => { const t = new THREE.CanvasTexture(cv); t.anisotropy = aniso; return t; };
 
-    const earthGeo = new THREE.SphereGeometry(R, small ? 48 : 72, small ? 32 : 48);
-    const earthMat = new THREE.MeshBasicMaterial({ map: earthTex, transparent: true, opacity: 0.95 });
-    const earth = new THREE.Mesh(earthGeo, earthMat);
-    scene.add(earth);
+    /* کره: شیدر با سایه‌ی لبه + درخشش طلایی کنار */
+    const globe = new THREE.Mesh(
+      new THREE.SphereGeometry(R, small ? 56 : 96, small ? 40 : 64),
+      new THREE.ShaderMaterial({
+        uniforms: { map: { value: mkTex(maps.base) } },
+        vertexShader: `varying vec2 vUv; varying vec3 vN;
+          void main(){ vUv=uv; vN=normalize(normalMatrix*normal); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+        fragmentShader: `uniform sampler2D map; varying vec2 vUv; varying vec3 vN;
+          void main(){
+            vec4 c=texture2D(map,vUv);
+            float f=clamp(dot(vN,vec3(0.,0.,1.)),0.,1.);
+            float shade=.30+.70*pow(f,.55);
+            float rim=pow(1.-f,3.);
+            gl_FragColor=vec4(c.rgb*shade+vec3(.83,.62,.42)*rim*.5,1.);
+          }`
+      }));
+    earth.add(globe);
 
-    /* ── هاله اطراف کره (atmosphere) ── */
-    const atmosGeo = new THREE.SphereGeometry(R * 1.08, 40, 40);
-    const atmosMat = new THREE.MeshBasicMaterial({
-      color: 0xd4a574,
-      transparent: true,
-      opacity: 0.06,
-      side: THREE.BackSide,
-      depthWrite: false
-    });
-    const atmos = new THREE.Mesh(atmosGeo, atmosMat);
-    scene.add(atmos);
-
-    /* ── کره سیمی طلایی (تزئینی) ── */
-    const wireGeo = new THREE.SphereGeometry(R * 1.004, 24, 16);
-    const wireMat = new THREE.MeshBasicMaterial({
-      color: 0xd4a574,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.06
-    });
-    const wire = new THREE.Mesh(wireGeo, wireMat);
-    scene.add(wire);
-
-    /* ── مارکر کشور انتخابی ── */
-    let marker = null, halo = null;
-
-    function latLngToVec3(lat, lng, r){
-      const phi   = (90 - lat) * Math.PI / 180;
-      const theta = (lng + 180) * Math.PI / 180;
-      return new THREE.Vector3(
-        -r * Math.sin(phi) * Math.cos(theta),
-         r * Math.cos(phi),
-         r * Math.sin(phi) * Math.sin(theta)
-      );
+    /* لایه‌ی کشور انتخابی (می‌درخشه و نبض می‌زنه) */
+    let hiMat = null;
+    if (selected && geo) {
+      hiMat = new THREE.MeshBasicMaterial({ map: mkTex(maps.hi), transparent:true, depthWrite:false, blending:THREE.AdditiveBlending, opacity:.9 });
+      earth.add(new THREE.Mesh(new THREE.SphereGeometry(R * 1.003, 96, 64), hiMat));
     }
 
-    function placeMarker(){
-      // پاک کردن قبلی
-      if (marker){ earth.remove(marker); marker.geometry.dispose(); marker.material.dispose(); marker = null; }
-      if (halo)  { earth.remove(halo);   halo.geometry.dispose();   halo.material.dispose();   halo = null; }
+    /* هاله‌ی جو */
+    root.add(new THREE.Mesh(
+      new THREE.SphereGeometry(R * 1.2, 64, 48),
+      new THREE.ShaderMaterial({
+        transparent:true, side:THREE.BackSide, depthWrite:false, blending:THREE.AdditiveBlending,
+        vertexShader: `varying vec3 vN; void main(){ vN=normalize(normalMatrix*normal); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+        fragmentShader: `varying vec3 vN; void main(){
+            float i=pow(clamp(.66-dot(vN,vec3(0.,0.,1.)),0.,1.),3.);
+            gl_FragColor=vec4(.90,.45,.35,1.)*i*1.1; }`
+      })));
 
-      const code = localStorage.getItem('selectedCountry');
-      if (!code || !COORDS[code]) return;
-
-      const [lat, lng] = COORDS[code];
-      const pos = latLngToVec3(lat, lng, R * 1.015);
-
-      // نقطه طلایی
-      marker = new THREE.Mesh(
-        new THREE.SphereGeometry(0.07, 16, 16),
-        new THREE.MeshBasicMaterial({ color: 0xd4a574 })
-      );
-      marker.position.copy(pos);
-      earth.add(marker);
-
-      // هاله قرمز پالسی
-      halo = new THREE.Mesh(
-        new THREE.SphereGeometry(0.22, 20, 20),
-        new THREE.MeshBasicMaterial({
-          color: 0xe63946,
-          transparent: true,
-          opacity: 0.35,
-          depthWrite: false
-        })
-      );
-      halo.position.copy(pos);
-      earth.add(halo);
+    /* چشمک‌زن (beacon) روی کشور انتخابی */
+    const ll2v = (lat, lng, r) => {
+      const phi = (90 - lat) * Math.PI / 180, th = (lng + 180) * Math.PI / 180;
+      return new THREE.Vector3(-r * Math.sin(phi) * Math.cos(th), r * Math.cos(phi), r * Math.sin(phi) * Math.sin(th));
+    };
+    const rings = [];
+    let face = null;                              // زاویه‌ای که کره باید بچرخه تا کشور رو به دوربین باشه
+    if (maps.center) {
+      const [lat, lng] = maps.center;
+      const p = ll2v(lat, lng, R * 1.01);
+      const pin = new THREE.Group();
+      pin.position.copy(p);
+      pin.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), p.clone().normalize());
+      pin.add(new THREE.Mesh(new THREE.SphereGeometry(.07, 16, 16), new THREE.MeshBasicMaterial({ color:0xfff0d0 })));
+      for (let i = 0; i < 3; i++) {
+        const m = new THREE.Mesh(new THREE.RingGeometry(.1, .13, 48),
+          new THREE.MeshBasicMaterial({ color:0xe63946, transparent:true, side:THREE.DoubleSide, depthWrite:false, blending:THREE.AdditiveBlending }));
+        m.userData.off = i / 3; pin.add(m); rings.push(m);
+      }
+      earth.add(pin);
+      face = { px: p.x, pz: p.z, lat };
     }
 
-    placeMarker();
+    /* مدار و ماهواره */
+    const orbit = new THREE.Group(); orbit.rotation.set(1.15, 0, .35); root.add(orbit);
+    const OR = R * 1.5, pts = [];
+    for (let i = 0; i <= 128; i++) { const a = i / 128 * Math.PI * 2; pts.push(new THREE.Vector3(Math.cos(a) * OR, Math.sin(a) * OR, 0)); }
+    orbit.add(new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(pts),
+      new THREE.LineBasicMaterial({ color:0xd4a574, transparent:true, opacity:.22 })));
+    const sat = new THREE.Mesh(new THREE.SphereGeometry(.09, 12, 12), new THREE.MeshBasicMaterial({ color:0xe63946 }));
+    const satGlow = new THREE.Mesh(new THREE.SphereGeometry(.22, 12, 12),
+      new THREE.MeshBasicMaterial({ color:0xe63946, transparent:true, opacity:.25, depthWrite:false, blending:THREE.AdditiveBlending }));
+    sat.add(satGlow); orbit.add(sat);
 
-    // اگه کاربر زبان عوض کرد (کشور عوض نمیشه ولی بعداً ممکنه)
-    document.addEventListener('languageChanged', () => setTimeout(placeMarker, 100));
+    /* ستاره‌ها (دو لایه: طلایی و سفید) */
+    const mkStars = (n, color, size, op) => {
+      const a = new Float32Array(n * 3);
+      for (let i = 0; i < n; i++) { a[i*3] = (Math.random() - .5) * 90; a[i*3+1] = (Math.random() - .5) * 55; a[i*3+2] = (Math.random() - .5) * 60 - 20; }
+      const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(a, 3));
+      const p = new THREE.Points(g, new THREE.PointsMaterial({ color, size, transparent:true, opacity:op, depthWrite:false }));
+      scene.add(p); return p;
+    };
+    const starsA = mkStars(small ? 220 : 520, 0xd4a574, .07, .6);
+    const starsB = mkStars(small ? 120 : 260, 0xffffff, .045, .45);
 
-    /* ── ستاره‌های پس‌زمینه ── */
-    const N = small ? 250 : 600;
-    const posArr = new Float32Array(N * 3);
-    for (let i = 0; i < N; i++) {
-      posArr[i*3]   = (Math.random() - .5) * 80;
-      posArr[i*3+1] = (Math.random() - .5) * 50;
-      posArr[i*3+2] = (Math.random() - .5) * 60 - 15;
-    }
-    const g = new THREE.BufferGeometry();
-    g.setAttribute('position', new THREE.BufferAttribute(posArr, 3));
-    const stars = new THREE.Points(g, new THREE.PointsMaterial({
-      color: 0xd4a574, size: .06, transparent: true, opacity: .55
-    }));
-    scene.add(stars);
-
-    /* ── موقعیت کره (چپ/راست با زبان) ── */
+    /* جای کره (راست‌چین → چپ) */
     let baseX = 0;
     function place(){
       const rtl = document.documentElement.dir === 'rtl';
-      baseX = small ? 0 : (rtl ? -5.8 : 5.8);
-      earth.position.x = baseX;
-      atmos.position.x = baseX;
-      wire.position.x  = baseX;
+      baseX = small ? 0 : (rtl ? -5.6 : 5.6);
+      root.position.set(baseX, small ? 1.2 : 0, 0);
+      const k = small ? .8 : 1; root.scale.set(k, k, k);
     }
     function resize(){
       const w = hero.clientWidth, h = hero.clientHeight;
@@ -220,56 +242,64 @@
     addEventListener('resize', resize);
     document.addEventListener('languageChanged', place);
 
-    /* ── موس و ژیروسکوپ ── */
+    /* موس و ژیروسکوپ */
     let mx = 0, my = 0;
-    addEventListener('mousemove', e => {
-      mx = e.clientX / innerWidth * 2 - 1;
-      my = e.clientY / innerHeight * 2 - 1;
-    });
+    addEventListener('mousemove', e => { mx = e.clientX / innerWidth * 2 - 1; my = e.clientY / innerHeight * 2 - 1; });
     addEventListener('deviceorientation', e => {
       if (e.gamma == null) return;
       mx = Math.max(-1, Math.min(1, e.gamma / 30));
       my = Math.max(-1, Math.min(1, (e.beta - 45) / 30));
     });
 
-    /* ── فقط وقتی دیده میشه رندر کن ── */
     let visible = true;
     new IntersectionObserver(en => { visible = en[0].isIntersecting; }).observe(hero);
 
-    /* ── لوپ انیمیشن ── */
+    /* چرخش: اول از یه زاویه‌ی دور تا کشور کاربر می‌چرخه، بعد دور اون زنده می‌مونه */
     const h1 = hero.querySelector('h1');
-    let pulseT = 0;
-    let spin = 0;
+    let t0 = null, sx = 0, sy = 0, free = Math.random() * 6;
+    const ease = x => 1 - Math.pow(1 - x, 4);
 
     (function loop(t){
       requestAnimationFrame(loop);
       if (!visible || document.hidden) return;
 
-      // چرخش آروم + واکنش به موس
-      spin += 0.0016;
-      earth.rotation.y = spin + mx * 0.35;
-      earth.rotation.x = my * 0.18;
-      wire.rotation.y = earth.rotation.y;
-      wire.rotation.x = earth.rotation.x;
+      if (t0 === null && document.body.classList.contains('loaded')) t0 = t;   // بعد از splash شروع کن
+      const k = t0 === null ? 0 : ease(Math.min((t - t0) / 3800, 1));
+      sx += (mx - sx) * .05; sy += (my - sy) * .05;
 
-      // پالس هاله
-      if (halo){
-        pulseT += 0.06;
-        const s = 1 + Math.sin(pulseT) * 0.4;
-        halo.scale.set(s, s, s);
-        halo.material.opacity = 0.35 + Math.sin(pulseT) * 0.2;
+      let ry, rx;
+      if (face) {
+        // کره باید طوری بچرخه که کشور رو به دوربین باشه (دوربین از نگاه مرکز کره، کمی کج دیده میشه)
+        const phiP = Math.atan2(face.px, face.pz);
+        const phiD = Math.atan2(-baseX, cam.position.z);
+        const target = phiD - phiP;
+        ry = target + (1 - k) * (-Math.PI * 1.6) + Math.sin(t * .00025) * .45 + sx * .55;
+        rx = face.lat * Math.PI / 180 * .55 * k + sy * .3;
+      } else {
+        free += .0016;
+        ry = free + sx * .55; rx = .25 + sy * .3;
       }
+      earth.rotation.set(rx, ry, 0);
 
-      stars.rotation.y = t * 0.00002 + mx * 0.04;
+      if (hiMat) hiMat.opacity = .75 + Math.sin(t * .003) * .22;
+      rings.forEach(m => {
+        const ph = ((t * .00055) + m.userData.off) % 1;
+        const sc = .6 + ph * 5;
+        m.scale.set(sc, sc, sc);
+        m.material.opacity = (1 - ph) * .9;
+      });
+      const a = t * .0006;
+      sat.position.set(Math.cos(a) * OR, Math.sin(a) * OR, 0);
+      satGlow.scale.setScalar(1 + Math.sin(t * .006) * .25);
 
-      // حرکت دوربین با موس
-      cam.position.x += (mx * 1.8 - cam.position.x) * 0.04;
-      cam.position.y += (-my * 1.1 - cam.position.y) * 0.04;
-      cam.lookAt(baseX, 0, 0);
+      starsA.rotation.y = t * .00002 + sx * .04;
+      starsB.rotation.y = -t * .000012 + sx * .02;
 
-      // جابجایی خفیف متن hero
+      cam.position.x += (sx * 1.6 - cam.position.x) * .08;
+      cam.position.y += (-sy * 1.0 - cam.position.y) * .08;
+      cam.lookAt(0, 0, 0);
+
       if (h1 && fine) h1.style.transform = `translate3d(${mx * -8}px, ${my * -5}px, 0)`;
-
       renderer.render(scene, cam);
     })(0);
 
