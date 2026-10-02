@@ -1,27 +1,31 @@
 /* ═══════════════════════════════════════════
-   🎡 Featured Ring Gallery (embedded)
+   🎡 Featured Ring Gallery
    ═══════════════════════════════════════════ */
 
 .featured-ring{
   position:relative;
   width:100%;
-  max-width:1100px;
+  max-width:1200px;
   margin:0 auto;
+  padding:60px 0;
+  overflow:visible;
+  isolation:isolate;
 }
 
 .fr-stage{
   position:relative;
   width:100%;
-  height:520px;
+  height:560px;
   display:flex;
   align-items:center;
   justify-content:center;
   perspective:1500px;
+  perspective-origin:50% 50%;
   cursor:grab;
   touch-action:pan-y;
   user-select:none;
   -webkit-user-select:none;
-  overflow:hidden;
+  /* هیچ overflow و transform اینجا نباشه */
 }
 .fr-stage.drag{cursor:grabbing}
 
@@ -41,6 +45,7 @@
   cursor:pointer;
   background:linear-gradient(135deg,hsl(var(--hue) 70% 38%),hsl(calc(var(--hue) + 50) 60% 18%));
   box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 0 1px rgba(212,165,116,.25);
+  -webkit-box-reflect:below 10px linear-gradient(transparent 70%,rgba(255,255,255,.12));
 }
 
 .fr-card img{
@@ -69,9 +74,9 @@
 .fr-floor{
   position:absolute;
   left:50%;
-  bottom:-40px;
-  width:min(900px,90vw);
-  height:250px;
+  bottom:30px;
+  width:min(900px,80vw);
+  height:200px;
   transform:translateX(-50%) rotateX(75deg);
   pointer-events:none;
   background:radial-gradient(ellipse,rgba(212,165,116,.28),rgba(230,57,70,.12) 40%,transparent 70%);
@@ -80,7 +85,7 @@
 
 .fr-info{
   position:absolute;
-  bottom:24px;
+  bottom:0;
   left:0;
   right:0;
   text-align:center;
@@ -102,7 +107,8 @@
 }
 
 @media(max-width:700px){
-  .fr-stage{height:400px}
+  .featured-ring{padding:40px 0}
+  .fr-stage{height:420px}
   .fr-ring{width:150px;height:195px}
-  .fr-floor{bottom:-30px;height:180px}
+  .fr-floor{bottom:10px;height:150px}
 }

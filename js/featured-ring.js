@@ -14,7 +14,7 @@
     if(ring.dataset.built === '1') return;
     ring.dataset.built = '1';
 
-    /* ── ۱۲ اثر متنوع ── */
+    /* ── ۱۲ اثر متنوع از دسته‌های مختلف ── */
     const FEATURED_COUNT = 12;
     const groups = {};
     WORKS.forEach(w => {
@@ -60,9 +60,9 @@
     let R = 0, rot = reduce ? 0 : -220, target = 0, vel = 0, tiltX = 12, mx = 0, my = 0;
     let dragging = false, moved = 0, lastX = 0, idle = 0, snapping = true, active = -1;
 
-    /* ── چیدمان — دقیقاً مثل نسخه‌ی اصلی ── */
+    /* ── چیدمان — مثل نسخه‌ی اصلی از innerWidth ── */
     function layout(){
-      const w = Math.min(Math.max(stage.clientWidth * 0.18, 130), 220);
+      const w = Math.min(Math.max(innerWidth * 0.14, 110), 200);
       ring.style.width = w + 'px';
       ring.style.height = (w * 1.3) + 'px';
       R = Math.round((w / 2) / Math.tan(Math.PI / N) * 1.18);
@@ -117,7 +117,7 @@
       snapping = true;
     });
 
-    /* ── لوپ — دقیقاً مثل نسخه‌ی اصلی ── */
+    /* ── لوپ ── */
     (function loop(){
       requestAnimationFrame(loop);
 
@@ -153,9 +153,10 @@
     })();
   }
 
+  /* بدون setTimeout — مستقیم اجرا */
   if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', () => setTimeout(init, 200));
+    document.addEventListener('DOMContentLoaded', init);
   } else {
-    setTimeout(init, 200);
+    init();
   }
 })();
