@@ -112,3 +112,23 @@
   .fr-ring{width:150px;height:195px}
   .fr-floor{bottom:10px;height:150px}
 }
+/* ═══════════════════════════════════════════
+   ✂️ حذف فاصله‌ی اضافی بین عنوان و حلقه
+   ═══════════════════════════════════════════ */
+
+/* کم کردن فاصله‌ی زیر عنوان بخش گالری */
+#works .section-head{
+  margin-bottom: 0 !important;
+}
+
+/* کشیدن گالری به سمت بالا */
+#works .featured-ring{
+  margin-top: -60px;
+}
+
+/* موبایل: کشیدن کمتر */
+@media(max-width:700px){
+  #works .featured-ring{
+    margin-top: -40px;
+  }
+}
