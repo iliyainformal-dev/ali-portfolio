@@ -180,26 +180,14 @@
             gl_FragColor=vec4(.90,.45,.35,1.)*i*1.1; }`
       })));
 
-    /* چشمک‌زن (beacon) روی کشور انتخابی */
+    /* مختصات مرکز کشور انتخابی (فقط برای اینکه اول کار کره کشور رو رو به دوربین بیاره) */
     const ll2v = (lat, lng, r) => {
       const phi = (90 - lat) * Math.PI / 180, th = (lng + 180) * Math.PI / 180;
       return new THREE.Vector3(-r * Math.sin(phi) * Math.cos(th), r * Math.cos(phi), r * Math.sin(phi) * Math.sin(th));
     };
-    const rings = [];
-    let face = null;                              // زاویه‌ای که کره باید بچرخه تا کشور رو به دوربین باشه
+    let face = null;
     if (maps.center) {
-      const [lat, lng] = maps.center;
-      const p = ll2v(lat, lng, R * 1.01);
-      const pin = new THREE.Group();
-      pin.position.copy(p);
-      pin.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), p.clone().normalize());
-      pin.add(new THREE.Mesh(new THREE.SphereGeometry(.07, 16, 16), new THREE.MeshBasicMaterial({ color:0xfff0d0 })));
-      for (let i = 0; i < 3; i++) {
-        const m = new THREE.Mesh(new THREE.RingGeometry(.1, .13, 48),
-          new THREE.MeshBasicMaterial({ color:0xe63946, transparent:true, side:THREE.DoubleSide, depthWrite:false, blending:THREE.AdditiveBlending }));
-        m.userData.off = i / 3; pin.add(m); rings.push(m);
-      }
-      earth.add(pin);
+      const [lat, lng] = maps.center, p = ll2v(lat, lng, R);
       face = { px: p.x, pz: p.z, lat };
     }
 
@@ -214,16 +202,44 @@
       new THREE.MeshBasicMaterial({ color:0xe63946, transparent:true, opacity:.25, depthWrite:false, blending:THREE.AdditiveBlending }));
     sat.add(satGlow); orbit.add(sat);
 
-    /* ستاره‌ها (دو لایه: طلایی و سفید) */
-    const mkStars = (n, color, size, op) => {
-      const a = new Float32Array(n * 3);
-      for (let i = 0; i < n; i++) { a[i*3] = (Math.random() - .5) * 90; a[i*3+1] = (Math.random() - .5) * 55; a[i*3+2] = (Math.random() - .5) * 60 - 20; }
-      const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(a, 3));
-      const p = new THREE.Points(g, new THREE.PointsMaterial({ color, size, transparent:true, opacity:op, depthWrite:false }));
-      scene.add(p); return p;
+    /* ستاره‌ها: ۳ لایه‌ی عمق (دور / میانی / نزدیک)، چشمک‌زن، با موس و اسکرول جابه‌جا میشن */
+    const starTime = { value: 0 }, PR = renderer.getPixelRatio();
+    const tint = [[1,.85,.62],[1,1,1],[1,.62,.58],[.75,.82,1]];
+    const mkStars = (n, z0, z1, size, k, op) => {
+      const pos = new Float32Array(n*3), col = new Float32Array(n*3), ph = new Float32Array(n), sz = new Float32Array(n);
+      for (let i = 0; i < n; i++) {
+        const z = z0 + Math.random() * (z1 - z0);
+        const hh = Math.tan(22.5 * Math.PI / 180) * (cam.position.z - z) * 1.25, hw = hh * 2.4;   // دقیقاً کل صفحه رو می‌پوشونه
+        pos.set([(Math.random() - .5) * 2 * hw, (Math.random() - .5) * 2 * hh, z], i * 3);
+        col.set(tint[Math.random() < .5 ? 0 : (Math.random() * 4 | 0)], i * 3);
+        ph[i] = Math.random() * 6.28; sz[i] = size * (.6 + Math.random() * .9);
+      }
+      const g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+      g.setAttribute('col', new THREE.BufferAttribute(col, 3));
+      g.setAttribute('phase', new THREE.BufferAttribute(ph, 1));
+      g.setAttribute('size', new THREE.BufferAttribute(sz, 1));
+      const m = new THREE.ShaderMaterial({
+        transparent:true, depthWrite:false, blending:THREE.AdditiveBlending,
+        uniforms: { time: starTime, pr: { value: PR }, op: { value: op } },
+        vertexShader: `attribute vec3 col; attribute float phase; attribute float size;
+          uniform float time; uniform float pr; uniform float op; varying vec3 vC; varying float vA;
+          void main(){ vC=col; vA=op*(.5+.5*sin(time*(.8+fract(phase*7.)*1.8)+phase));
+            gl_PointSize=size*pr; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+        fragmentShader: `varying vec3 vC; varying float vA;
+          void main(){ float d=length(gl_PointCoord-.5); gl_FragColor=vec4(vC,smoothstep(.5,.05,d)*vA); }`
+      });
+      const p = new THREE.Points(g, m); p.frustumCulled = false; p.userData.k = k; scene.add(p); return p;
     };
-    const starsA = mkStars(small ? 220 : 520, 0xd4a574, .07, .6);
-    const starsB = mkStars(small ? 120 : 260, 0xffffff, .045, .45);
+    const stars = small
+      ? [mkStars(450, -60, -35, 1.6, .25, .7), mkStars(250, -35, -15, 2.4, .6, .85), mkStars(80, -15, -4, 3.6, 1.2, 1)]
+      : [mkStars(900, -60, -35, 1.6, .25, .7), mkStars(500, -35, -15, 2.4, .6, .85), mkStars(160, -15, -4, 3.6, 1.2, 1)];
+
+    /* شهاب‌سنگ گاه‌به‌گاه */
+    const shoot = new THREE.Mesh(new THREE.PlaneGeometry(3.2, .035),
+      new THREE.MeshBasicMaterial({ color:0xfff0d0, transparent:true, opacity:0, blending:THREE.AdditiveBlending, depthWrite:false }));
+    shoot.rotation.z = Math.atan2(-.45, 1); scene.add(shoot);
+    let shootT0 = -1, shootNext = 3500, sx0 = 0, sy0 = 0;
 
     /* جای کره (راست‌چین → چپ) */
     let baseX = 0;
@@ -256,44 +272,50 @@
 
     /* چرخش: اول از یه زاویه‌ی دور تا کشور کاربر می‌چرخه، بعد دور اون زنده می‌مونه */
     const h1 = hero.querySelector('h1');
-    let t0 = null, sx = 0, sy = 0, free = Math.random() * 6;
+    let t0 = null, tPrev = 0, sx = 0, sy = 0, spin = 0;
     const ease = x => 1 - Math.pow(1 - x, 4);
+    const SPEED = 0.11;                       // رادیان بر ثانیه (هر ~۵۷ ثانیه یک دور کامل)؛ بزرگ‌تر = سریع‌تر
 
     (function loop(t){
       requestAnimationFrame(loop);
+      const dt = Math.min((t - tPrev) / 1000, .1); tPrev = t;
       if (!visible || document.hidden) return;
 
       if (t0 === null && document.body.classList.contains('loaded')) t0 = t;   // بعد از splash شروع کن
       const k = t0 === null ? 0 : ease(Math.min((t - t0) / 3800, 1));
       sx += (mx - sx) * .05; sy += (my - sy) * .05;
+      if (t0 !== null) spin += dt * SPEED * (1 + Math.abs(sx) * .6);          // با موس کمی تندتر میشه
 
       let ry, rx;
       if (face) {
-        // کره باید طوری بچرخه که کشور رو به دوربین باشه (دوربین از نگاه مرکز کره، کمی کج دیده میشه)
-        const phiP = Math.atan2(face.px, face.pz);
-        const phiD = Math.atan2(-baseX, cam.position.z);
-        const target = phiD - phiP;
-        ry = target + (1 - k) * (-Math.PI * 1.6) + Math.sin(t * .00025) * .45 + sx * .55;
-        rx = face.lat * Math.PI / 180 * .55 * k + sy * .3;
+        // اول کشور رو به دوربینه، بعد کره دور خودش کامل می‌چرخه
+        const target = Math.atan2(-baseX, cam.position.z) - Math.atan2(face.px, face.pz);
+        const mix = Math.min(spin / 1.2, 1);                                  // کم‌کم از زاویه‌ی کشور به تیلت ثابت میره
+        ry = target + (1 - k) * (-Math.PI * 1.6) + spin + sx * .5;
+        rx = (face.lat * Math.PI / 180 * .55 * k) * (1 - mix) + .3 * mix + sy * .3;
       } else {
-        free += .0016;
-        ry = free + sx * .55; rx = .25 + sy * .3;
+        ry = spin + sx * .5; rx = .3 + sy * .3;
       }
       earth.rotation.set(rx, ry, 0);
 
       if (hiMat) hiMat.opacity = .75 + Math.sin(t * .003) * .22;
-      rings.forEach(m => {
-        const ph = ((t * .00055) + m.userData.off) % 1;
-        const sc = .6 + ph * 5;
-        m.scale.set(sc, sc, sc);
-        m.material.opacity = (1 - ph) * .9;
-      });
       const a = t * .0006;
       sat.position.set(Math.cos(a) * OR, Math.sin(a) * OR, 0);
       satGlow.scale.setScalar(1 + Math.sin(t * .006) * .25);
 
-      starsA.rotation.y = t * .00002 + sx * .04;
-      starsB.rotation.y = -t * .000012 + sx * .02;
+      starTime.value = t * .001;
+      stars.forEach(p => {
+        const k = p.userData.k;
+        p.position.x += (-sx * k * 2.4 - p.position.x) * .06;
+        p.position.y += (sy * k * 1.5 + scrollY * .004 * k - p.position.y) * .06;
+        p.rotation.z = t * .000006 * (1 + k);
+      });
+      if (shootT0 < 0 && t > shootNext) { shootT0 = t; sx0 = -16 + Math.random() * 10; sy0 = 5 + Math.random() * 5; }
+      if (shootT0 >= 0) {
+        const q = (t - shootT0) / 1100;
+        if (q >= 1) { shootT0 = -1; shootNext = t + 5000 + Math.random() * 7000; shoot.material.opacity = 0; }
+        else { shoot.position.set(sx0 + q * 24, sy0 - q * 10.8, -8); shoot.material.opacity = Math.sin(q * Math.PI) * .9; }
+      }
 
       cam.position.x += (sx * 1.6 - cam.position.x) * .08;
       cam.position.y += (-sy * 1.0 - cam.position.y) * .08;
