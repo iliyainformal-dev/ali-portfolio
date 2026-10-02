@@ -137,6 +137,7 @@
       const ty = mx * 10;
       tiltX += (tx - tiltX) * 0.06;
       ring.style.transform = `translateZ(${-R}px) rotateX(${-tiltX}deg) rotateY(${rot + ty}deg)`;
+ring.style.transformOrigin = '50% 50%';
 
       let best = -2, bi = 0;
       cards.forEach((c, i) => {
