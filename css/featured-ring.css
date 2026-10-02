@@ -132,3 +132,18 @@
     margin-top: -40px;
   }
 }
+/* ✂️ حذف فاصله‌ی اضافه */
+#works .section-head{
+  margin-bottom: 0 !important;
+}
+
+#works .featured-ring{
+  margin-top: -80px;
+}
+
+/* موبایل */
+@media(max-width:700px){
+  #works .featured-ring{
+    margin-top: -60px;
+  }
+}
