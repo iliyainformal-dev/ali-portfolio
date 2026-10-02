@@ -244,11 +244,13 @@
     /* جای کره (راست‌چین → چپ) */
     let baseX = 0;
     function place(){
-      const rtl = document.documentElement.dir === 'rtl';
-      baseX = small ? 0 : (rtl ? -5.6 : 5.6);
-      root.position.set(baseX, small ? 1.2 : 0, 0);
-      const k = small ? .8 : 1; root.scale.set(k, k, k);
-    }
+  const rtl = document.documentElement.dir === 'rtl';
+  const offset = small ? 4.5 : 5.8;
+  baseX = rtl ? -offset : offset;
+  earth.position.x = baseX;
+  atmos.position.x = baseX;
+  wire.position.x  = baseX;
+}
     function resize(){
       const w = hero.clientWidth, h = hero.clientHeight;
       renderer.setSize(w, h, false);

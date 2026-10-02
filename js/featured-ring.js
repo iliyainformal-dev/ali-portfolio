@@ -81,12 +81,14 @@
       snapping = false;
       vel = 0;
       stage.classList.add('drag');
+        if(stage.setPointerCapture) stage.setPointerCapture(e.pointerId);
     });
 
     addEventListener('pointermove', e => {
       mx = e.clientX / innerWidth * 2 - 1;
       my = e.clientY / innerHeight * 2 - 1;
       if(!dragging) return;
+        e.preventDefault();
       const dx = e.clientX - lastX;
       lastX = e.clientX;
       moved += Math.abs(dx);
