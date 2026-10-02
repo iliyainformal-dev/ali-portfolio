@@ -147,3 +147,39 @@
     margin-top: -60px;
   }
 }
+/* ═══════════════════════════════════════════
+   ✂️ جمع کردن فاصله‌ها
+   ═══════════════════════════════════════════ */
+
+/* فاصله‌ی عنوان تا حلقه = کم */
+#works .section-head{
+  margin-bottom: 0 !important;
+}
+
+/* حلقه میاد بالا (به عنوان نزدیک) */
+#works .featured-ring{
+  padding-top: 0 !important;
+  margin-top: -60px;
+}
+
+/* کم کردن فاصله‌ی کلی بخش works */
+#works{
+  padding-top: 60px !important;
+  padding-bottom: 60px !important;
+}
+
+/* دکمه‌ی «مشاهده همه آثار» نزدیک‌تر */
+#works .center-btn{
+  margin-top: 20px !important;
+}
+
+/* موبایل */
+@media(max-width:700px){
+  #works{
+    padding-top: 40px !important;
+    padding-bottom: 40px !important;
+  }
+  #works .featured-ring{
+    margin-top: -40px;
+  }
+}
