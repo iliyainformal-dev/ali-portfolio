@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>گالری سه‌بعدی — علی قائمی</title>
+<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
+<style>
+:root{--bg:#0a0a0f;--text:#ededf2;--muted:#8a8a95;--accent:#e63946;--accent-2:#d4a574}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:'Vazirmatn',system-ui,sans-serif;overflow:hidden;
+  background-image:radial-gradient(900px 500px at 80% -10%,rgba(230,57,70,.22),transparent 70%),
+                   radial-gradient(800px 500px at 10% 110%,rgba(212,165,116,.18),transparent 70%)}
+/* دانه‌های نور شناور */
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.5;
+  background-image:radial-gradient(1.5px 1.5px at 20% 30%,#d4a574,transparent),radial-gradient(1px 1px at 70% 20%,#fff,transparent),
+  radial-gradient(1.5px 1.5px at 40% 80%,#e63946,transparent),radial-gradient(1px 1px at 85% 65%,#d4a574,transparent),
+  radial-gradient(1px 1px at 10% 70%,#fff,transparent),radial-gradient(1.5px 1.5px at 55% 50%,#d4a574,transparent);
+  background-size:420px 420px;animation:drift 40s linear infinite}
+@keyframes drift{to{background-position:420px 420px}}
+
+header{position:fixed;top:0;inset-inline:0;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:22px 5vw}
+header a{color:var(--muted);text-decoration:none;font-size:.9rem;transition:.25s}
+header a:hover{color:var(--accent-2)}
+header b{font-weight:800;letter-spacing:1px;background:linear-gradient(135deg,#fff,var(--accent-2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+
+.stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;perspective:1500px;cursor:grab;touch-action:pan-y;user-select:none}
+.stage.drag{cursor:grabbing}
+.ring{position:relative;width:var(--w);height:var(--h);transform-style:preserve-3d;will-change:transform}
+.card{position:absolute;inset:0;border-radius:14px;overflow:hidden;cursor:pointer;
+  background:linear-gradient(135deg,hsl(var(--hue) 70% 38%),hsl(calc(var(--hue) + 50) 60% 18%));
+  box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 0 1px rgba(212,165,116,.25);
+  -webkit-box-reflect:below 10px linear-gradient(transparent 70%,rgba(255,255,255,.16))}
+.card img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;-webkit-user-drag:none}
+.card::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 35%,rgba(255,255,255,.14) 50%,transparent 65%);
+  transform:translateX(-120%);transition:transform .9s}
+.card.front::after{transform:translateX(120%)}
+.card.front{box-shadow:0 30px 80px rgba(0,0,0,.7),0 0 0 2px var(--accent-2),0 0 50px rgba(212,165,116,.35)}
+
+/* کف درخشان زیر حلقه */
+.floor{position:fixed;left:50%;bottom:12vh;width:min(900px,110vw);height:300px;transform:translateX(-50%) rotateX(75deg);pointer-events:none;
+  background:radial-gradient(ellipse,rgba(212,165,116,.28),rgba(230,57,70,.12) 40%,transparent 70%);filter:blur(10px)}
+
+.info{position:fixed;bottom:5vh;inset-inline:0;text-align:center;z-index:5;pointer-events:none}
+.info h2{font-size:clamp(1.3rem,3vw,2rem);font-weight:800;transition:opacity .25s}
+.info p{color:var(--muted);font-size:.85rem;margin-top:6px;letter-spacing:.5px}
+.info .n{color:var(--accent-2);font-weight:700}
+
+.intro{position:fixed;top:14vh;inset-inline:0;text-align:center;z-index:4;pointer-events:none;animation:in 1.4s .3s both cubic-bezier(.2,.7,.2,1)}
+.intro h1{font-size:clamp(1.8rem,5vw,3.4rem);font-weight:800}
+.intro h1 em{font-style:normal;color:var(--accent)}
+@keyframes in{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@media(max-width:700px){.intro{top:11vh}.floor{bottom:16vh}}
+@media(prefers-reduced-motion:reduce){body::before{animation:none}}
+</style>
+</head>
+<body>
+
+<header>
+  <b>علی</b>
+  <a href="works.html">← همه آثار</a>
+</header>
+
+<div class="intro"><h1>آثار، <em>دور تو</em> می‌چرخن</h1></div>
+
+<div class="stage" id="stage"><div class="ring" id="ring"></div></div>
+<div class="floor"></div>
+
+<div class="info">
+  <h2 id="title"></h2>
+  <p><span class="n" id="count"></span> · بکش یا بزن روی هر اثر</p>
+</div>
+
+<script>
+/* مسیر عکس‌ها رو با آثار خودت عوض کن. اگه عکسی پیدا نشه، یه گرادیان رنگی نشون داده می‌شه */
+const ITEMS = [
+  ["images/works/digital-paintings/1.jpg","اثر ۱"],  ["images/works/digital-paintings/2.jpeg","اثر ۲"],
+  ["images/works/digital-paintings/3.jpg","اثر ۳"],  ["images/works/digital-paintings/4.png","اثر ۴"],
+  ["images/works/digital-paintings/5.jpeg","اثر ۵"], ["images/works/digital-paintings/6.jpg","اثر ۶"],
+  ["images/works/digital-paintings/7.jpg","اثر ۷"],  ["images/works/digital-paintings/8.jpg","اثر ۸"],
+  ["images/works/digital-paintings/9.jpg","اثر ۹"],  ["images/works/digital-paintings/10.jpg","اثر ۱۰"],
+  ["images/works/digital-paintings/11.jpg","اثر ۱۱"],["images/works/digital-paintings/12.jpg","اثر ۱۲"]
+];
+
+const stage = document.getElementById('stage'), ring = document.getElementById('ring');
+const titleEl = document.getElementById('title'), countEl = document.getElementById('count');
+const N = ITEMS.length, step = 360 / N;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const fa = n => String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+
+const cards = ITEMS.map(([src, name], i) => {
+  const c = document.createElement('div');
+  c.className = 'card'; c.style.setProperty('--hue', (i * 360 / N) % 360);
+  const img = new Image(); img.src = src; img.alt = name; img.loading = 'lazy'; img.draggable = false;
+  img.onerror = () => img.remove();
+  c.appendChild(img); ring.appendChild(c);
+  return c;
+});
+
+let R = 0, rot = reduce ? 0 : -220, target = 0, vel = 0, tiltX = 12, mx = 0, my = 0;
+let dragging = false, moved = 0, lastX = 0, idle = 0, snapping = true, active = -1;
+
+function layout(){
+  const w = Math.min(Math.max(innerWidth * .2, 150), 260);
+  ring.style.setProperty('--w', w + 'px'); ring.style.setProperty('--h', w * 1.3 + 'px');
+  R = Math.round((w / 2) / Math.tan(Math.PI / N) * 1.18);
+  cards.forEach((c, i) => c.style.transform = `rotateY(${i * step}deg) translateZ(${R}px)`);
+}
+layout(); addEventListener('resize', layout);
+
+/* درگ با ماوس و لمس */
+stage.addEventListener('pointerdown', e => { dragging = true; moved = 0; lastX = e.clientX; snapping = false; vel = 0; stage.classList.add('drag'); });
+addEventListener('pointermove', e => {
+  mx = e.clientX / innerWidth * 2 - 1; my = e.clientY / innerHeight * 2 - 1;
+  if (!dragging) return;
+  const dx = e.clientX - lastX; lastX = e.clientX; moved += Math.abs(dx);
+  rot += dx * .25; vel = dx * .25; idle = 0;
+});
+addEventListener('pointerup', () => { dragging = false; stage.classList.remove('drag'); });
+
+/* کلیک روی کارت: بیارش جلو */
+cards.forEach((c, i) => c.addEventListener('click', () => {
+  if (moved > 6) return;
+  let t = -i * step, k = Math.round((rot - t) / 360);
+  target = t + k * 360; snapping = true;
+}));
+addEventListener('keydown', e => {
+  if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+  const dir = e.key === 'ArrowLeft' ? -1 : 1;
+  target = Math.round(rot / step) * step + dir * step; snapping = true;
+});
+
+(function loop(){
+  requestAnimationFrame(loop);
+  if (snapping) { rot += (target - rot) * .08; if (Math.abs(target - rot) < .05) snapping = false; }
+  else if (!dragging) {
+    rot += vel; vel *= .94;
+    idle++; if (Math.abs(vel) < .02 && idle > 90 && !reduce) rot += .06;   // چرخش آرام بعد از بی‌حرکتی
+  }
+  const tx = 10 + my * -8, ty = mx * 10;
+  tiltX += (tx - tiltX) * .06;
+  ring.style.transform = `translateZ(${-R}px) rotateX(${-tiltX}deg) rotateY(${rot + ty}deg)`;
+
+  let best = -2, bi = 0;
+  cards.forEach((c, i) => {
+    const f = Math.cos((i * step + rot) * Math.PI / 180);       // ۱ = دقیقاً جلو
+    const k = (f + 1) / 2;
+    c.style.opacity = (.25 + .75 * k).toFixed(2);
+    c.style.filter = `brightness(${(.4 + .6 * k).toFixed(2)})`;
+    if (f > best) { best = f; bi = i; }
+  });
+  if (bi !== active) {
+    active = bi;
+    cards.forEach((c, i) => c.classList.toggle('front', i === bi));
+    titleEl.style.opacity = 0;
+    setTimeout(() => { titleEl.textContent = ITEMS[bi][1]; titleEl.style.opacity = 1; }, 120);
+    countEl.textContent = fa(bi + 1) + ' / ' + fa(N);
+  }
+})();
+</script>
+</body>
+</html>
