@@ -7,7 +7,7 @@
   width:100%;
   max-width:1200px;
   margin:0 auto;
-  padding:60px 0;
+  padding:0 0 20px;
   overflow:visible;
   isolation:isolate;
 }
@@ -15,17 +15,16 @@
 .fr-stage{
   position:relative;
   width:100%;
-  height:560px;
+  height:440px;
   display:flex;
   align-items:center;
   justify-content:center;
   perspective:1500px;
   perspective-origin:50% 50%;
   cursor:grab;
-  touch-action: none;
+  touch-action:none;              /* ⚡ درگ موبایل */
   user-select:none;
   -webkit-user-select:none;
-  /* هیچ overflow و transform اینجا نباشه */
 }
 .fr-stage.drag{cursor:grabbing}
 
@@ -74,9 +73,9 @@
 .fr-floor{
   position:absolute;
   left:50%;
-  bottom:30px;
-  width:min(900px,80vw);
-  height:200px;
+  bottom:40px;
+  width:min(700px,70vw);
+  height:150px;
   transform:translateX(-50%) rotateX(75deg);
   pointer-events:none;
   background:radial-gradient(ellipse,rgba(212,165,116,.28),rgba(230,57,70,.12) 40%,transparent 70%);
@@ -85,7 +84,7 @@
 
 .fr-info{
   position:absolute;
-  bottom:0;
+  bottom:10px;
   left:0;
   right:0;
   text-align:center;
@@ -106,80 +105,36 @@
   letter-spacing:1px;
 }
 
-@media(max-width:700px){
-  .featured-ring{padding:40px 0}
-  .fr-stage{height:420px}
-  .fr-ring{width:150px;height:195px}
-  .fr-floor{bottom:10px;height:150px}
-}
-/* ═══════════════════════════════════════════
-   ✂️ حذف فاصله‌ی اضافی بین عنوان و حلقه
-   ═══════════════════════════════════════════ */
-
-/* کم کردن فاصله‌ی زیر عنوان بخش گالری */
+/* ✂️ فاصله‌های جمع‌تر */
 #works .section-head{
-  margin-bottom: 0 !important;
+  margin-bottom:0 !important;
 }
-
-/* کشیدن گالری به سمت بالا */
 #works .featured-ring{
-  margin-top: -60px;
+  margin-top:-60px;
 }
-
-/* موبایل: کشیدن کمتر */
-@media(max-width:700px){
-  #works .featured-ring{
-    margin-top: -40px;
-  }
-}
-/* ✂️ حذف فاصله‌ی اضافه */
-#works .section-head{
-  margin-bottom: 0 !important;
-}
-
-#works .featured-ring{
-  margin-top: -80px;
-}
-
-/* موبایل */
-@media(max-width:700px){
-  #works .featured-ring{
-    margin-top: -60px;
-  }
-}
-/* ═══════════════════════════════════════════
-   ✂️ جمع کردن فاصله‌ها
-   ═══════════════════════════════════════════ */
-
-/* فاصله‌ی عنوان تا حلقه = کم */
-#works .section-head{
-  margin-bottom: 0 !important;
-}
-
-/* حلقه میاد بالا (به عنوان نزدیک) */
-#works .featured-ring{
-  padding-top: 0 !important;
-  margin-top: -60px;
-}
-
-/* کم کردن فاصله‌ی کلی بخش works */
 #works{
-  padding-top: 60px !important;
-  padding-bottom: 60px !important;
+  padding-top:60px !important;
+  padding-bottom:60px !important;
 }
-
-/* دکمه‌ی «مشاهده همه آثار» نزدیک‌تر */
 #works .center-btn{
-  margin-top: 20px !important;
+  margin-top:20px !important;
 }
 
-/* موبایل */
+/* ⚡ بهینه‌سازی موبایل */
 @media(max-width:700px){
   #works{
-    padding-top: 40px !important;
-    padding-bottom: 40px !important;
+    padding-top:40px !important;
+    padding-bottom:40px !important;
   }
   #works .featured-ring{
-    margin-top: -40px;
+    margin-top:-40px;
+  }
+  .featured-ring{padding:0 0 10px}
+  .fr-stage{height:340px}
+  .fr-ring{width:150px;height:195px}
+  .fr-floor{bottom:20px;height:100px;width:80vw}
+  .fr-card{
+    -webkit-box-reflect:none !important;      /* ⚡ انعکاس خاموش */
+    box-shadow:0 10px 30px rgba(0,0,0,.5) !important;
   }
 }

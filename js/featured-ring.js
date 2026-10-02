@@ -14,7 +14,6 @@
     if(ring.dataset.built === '1') return;
     ring.dataset.built = '1';
 
-    /* ── ۱۲ اثر متنوع از دسته‌های مختلف ── */
     const FEATURED_COUNT = 12;
     const groups = {};
     WORKS.forEach(w => {
@@ -38,7 +37,6 @@
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const fa = n => String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
 
-    /* ── ساخت کارت‌ها ── */
     const cards = items.map((w, i) => {
       const c = document.createElement('div');
       c.className = 'fr-card';
@@ -56,16 +54,14 @@
       return c;
     });
 
-    /* ── وضعیت ── */
     let R = 0, rot = reduce ? 0 : -220, target = 0, vel = 0, tiltX = 12, mx = 0, my = 0;
     let dragging = false, moved = 0, lastX = 0, idle = 0, snapping = true, active = -1;
 
-    /* ── چیدمان — مثل نسخه‌ی اصلی از innerWidth ── */
     function layout(){
-      const w = Math.min(Math.max(innerWidth * 0.14, 110), 200);
+      const w = Math.min(Math.max(stage.clientWidth * 0.18, 130), 220);
       ring.style.width = w + 'px';
       ring.style.height = (w * 1.3) + 'px';
-      R = Math.round((w / 2) / Math.tan(Math.PI / N) * 1.18);
+      R = Math.round((w / 2) / Math.tan(Math.PI / N) * 1.02);
       cards.forEach((c, i) => {
         c.style.transform = `rotateY(${i * step}deg) translateZ(${R}px)`;
       });
@@ -73,7 +69,7 @@
     layout();
     addEventListener('resize', layout);
 
-    /* ── درگ ── */
+    /* ⚡ درگ با موس + لمس (اصلاح‌شده برای موبایل) */
     stage.addEventListener('pointerdown', e => {
       dragging = true;
       moved = 0;
@@ -81,28 +77,33 @@
       snapping = false;
       vel = 0;
       stage.classList.add('drag');
-        if(stage.setPointerCapture) stage.setPointerCapture(e.pointerId);
+      if(stage.setPointerCapture) {
+        try { stage.setPointerCapture(e.pointerId); } catch(err) {}
+      }
     });
 
-    addEventListener('pointermove', e => {
+    stage.addEventListener('pointermove', e => {
       mx = e.clientX / innerWidth * 2 - 1;
       my = e.clientY / innerHeight * 2 - 1;
       if(!dragging) return;
-        e.preventDefault();
+      if(e.cancelable) e.preventDefault();
       const dx = e.clientX - lastX;
       lastX = e.clientX;
       moved += Math.abs(dx);
       rot += dx * 0.25;
       vel = dx * 0.25;
       idle = 0;
-    });
+    }, { passive: false });
 
-    addEventListener('pointerup', () => {
+    stage.addEventListener('pointerup', () => {
+      dragging = false;
+      stage.classList.remove('drag');
+    });
+    stage.addEventListener('pointercancel', () => {
       dragging = false;
       stage.classList.remove('drag');
     });
 
-    /* ── کلیک روی کارت ── */
     cards.forEach((c, i) => c.addEventListener('click', () => {
       if(moved > 6) return;
       const t = -i * step;
@@ -111,7 +112,6 @@
       snapping = true;
     }));
 
-    /* ── کیبورد ── */
     addEventListener('keydown', e => {
       if(e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
       const dir = e.key === 'ArrowLeft' ? -1 : 1;
@@ -119,9 +119,24 @@
       snapping = true;
     });
 
-    /* ── لوپ ── */
+    /* ⚡ فقط وقتی دیده میشه رندر کن + موبایل: هر ۲ فریم */
+    const isMobile = innerWidth < 700;
+    let visible = true;
+    new IntersectionObserver(entries => {
+      visible = entries[0].isIntersecting;
+    }, { threshold: 0 }).observe(stage);
+
+    let frameSkip = 0;
+
     (function loop(){
       requestAnimationFrame(loop);
+
+      if(!visible || document.hidden) return;
+
+      if(isMobile){
+        frameSkip++;
+        if(frameSkip % 2 !== 0) return;
+      }
 
       if(snapping){
         rot += (target - rot) * 0.08;
@@ -133,8 +148,8 @@
         if(Math.abs(vel) < 0.02 && idle > 90 && !reduce) rot += 0.06;
       }
 
-      const tx = 10 + my * -8;
-      const ty = mx * 10;
+      const tx = isMobile ? 8 : (10 + my * -8);
+      const ty = isMobile ? 0 : (mx * 10);
       tiltX += (tx - tiltX) * 0.06;
       ring.style.transform = `translateZ(${-R}px) rotateX(${-tiltX}deg) rotateY(${rot + ty}deg)`;
 
@@ -155,10 +170,9 @@
     })();
   }
 
-  /* بدون setTimeout — مستقیم اجرا */
   if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', () => setTimeout(init, 200));
   } else {
-    init();
+    setTimeout(init, 200);
   }
 })();
