@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════
-   🎡 Featured Ring Gallery
+   🎡 Featured Ring Gallery (embedded)
    ═══════════════════════════════════════════ */
 
 .featured-ring{
@@ -7,15 +7,16 @@
   width:100%;
   max-width:1100px;
   margin:0 auto;
-  padding:20px 0 80px;
 }
 
 .fr-stage{
   position:relative;
   width:100%;
   height:520px;
-  perspective:1400px;
-  perspective-origin:50% 50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  perspective:1500px;
   cursor:grab;
   touch-action:pan-y;
   user-select:none;
@@ -25,13 +26,9 @@
 .fr-stage.drag{cursor:grabbing}
 
 .fr-ring{
-  position:absolute;
-  left:50%;
-  top:50%;
+  position:relative;
   width:200px;
   height:260px;
-  margin-left:-100px;
-  margin-top:-130px;
   transform-style:preserve-3d;
   will-change:transform;
 }
@@ -44,7 +41,6 @@
   cursor:pointer;
   background:linear-gradient(135deg,hsl(var(--hue) 70% 38%),hsl(calc(var(--hue) + 50) 60% 18%));
   box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 0 1px rgba(212,165,116,.25);
-  backface-visibility:hidden;
 }
 
 .fr-card img{
@@ -73,28 +69,31 @@
 .fr-floor{
   position:absolute;
   left:50%;
-  bottom:40px;
+  bottom:-40px;
   width:min(900px,90vw);
-  height:200px;
+  height:250px;
   transform:translateX(-50%) rotateX(75deg);
   pointer-events:none;
-  background:radial-gradient(ellipse,rgba(212,165,116,.25),rgba(230,57,70,.1) 40%,transparent 70%);
+  background:radial-gradient(ellipse,rgba(212,165,116,.28),rgba(230,57,70,.12) 40%,transparent 70%);
   filter:blur(10px);
 }
 
 .fr-info{
-  position:relative;
+  position:absolute;
+  bottom:24px;
+  left:0;
+  right:0;
   text-align:center;
-  margin-top:-30px;
-  z-index:2;
+  pointer-events:none;
+  z-index:5;
 }
 .fr-count{
   display:inline-block;
   padding:6px 18px;
-  background:rgba(15,15,20,.6);
+  background:rgba(15,15,20,.7);
   backdrop-filter:blur(10px);
   -webkit-backdrop-filter:blur(10px);
-  border:1px solid rgba(212,165,116,.2);
+  border:1px solid rgba(212,165,116,.25);
   border-radius:100px;
   color:#d4a574;
   font-size:.8rem;
@@ -104,6 +103,6 @@
 
 @media(max-width:700px){
   .fr-stage{height:400px}
-  .fr-ring{width:150px;height:195px;margin-left:-75px;margin-top:-97px}
-  .fr-floor{bottom:20px;height:140px}
+  .fr-ring{width:150px;height:195px}
+  .fr-floor{bottom:-30px;height:180px}
 }

@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════
-   🎡 Featured Ring Gallery — گالری سه‌بعدی حلقه‌ای
+   🎡 Featured Ring Gallery
    ═══════════════════════════════════════════ */
 (function(){
   function init(){
@@ -14,7 +14,7 @@
     if(ring.dataset.built === '1') return;
     ring.dataset.built = '1';
 
-    /* ── انتخاب ۱۲ اثر متنوع از دسته‌های مختلف ── */
+    /* ── ۱۲ اثر متنوع ── */
     const FEATURED_COUNT = 12;
     const groups = {};
     WORKS.forEach(w => {
@@ -43,7 +43,6 @@
       const c = document.createElement('div');
       c.className = 'fr-card';
       c.style.setProperty('--hue', (i * 360 / N) % 360);
-      c.dataset.workId = w.id;
 
       const img = new Image();
       img.src = w.image;
@@ -61,10 +60,9 @@
     let R = 0, rot = reduce ? 0 : -220, target = 0, vel = 0, tiltX = 12, mx = 0, my = 0;
     let dragging = false, moved = 0, lastX = 0, idle = 0, snapping = true, active = -1;
 
-    /* ── چیدمان ── */
+    /* ── چیدمان — دقیقاً مثل نسخه‌ی اصلی ── */
     function layout(){
-      const stageW = stage.clientWidth;
-      const w = Math.min(Math.max(stageW * 0.16, 120), 200);
+      const w = Math.min(Math.max(stage.clientWidth * 0.18, 130), 220);
       ring.style.width = w + 'px';
       ring.style.height = (w * 1.3) + 'px';
       R = Math.round((w / 2) / Math.tan(Math.PI / N) * 1.18);
@@ -102,7 +100,7 @@
       stage.classList.remove('drag');
     });
 
-    /* ── کلیک روی کارت: بیار جلو ── */
+    /* ── کلیک روی کارت ── */
     cards.forEach((c, i) => c.addEventListener('click', () => {
       if(moved > 6) return;
       const t = -i * step;
@@ -111,7 +109,7 @@
       snapping = true;
     }));
 
-    /* ── کیبورد چپ/راست ── */
+    /* ── کیبورد ── */
     addEventListener('keydown', e => {
       if(e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
       const dir = e.key === 'ArrowLeft' ? -1 : 1;
@@ -119,7 +117,7 @@
       snapping = true;
     });
 
-    /* ── لوپ انیمیشن ── */
+    /* ── لوپ — دقیقاً مثل نسخه‌ی اصلی ── */
     (function loop(){
       requestAnimationFrame(loop);
 
@@ -137,7 +135,6 @@
       const ty = mx * 10;
       tiltX += (tx - tiltX) * 0.06;
       ring.style.transform = `translateZ(${-R}px) rotateX(${-tiltX}deg) rotateY(${rot + ty}deg)`;
-ring.style.transformOrigin = '50% 50%';
 
       let best = -2, bi = 0;
       cards.forEach((c, i) => {
@@ -157,8 +154,8 @@ ring.style.transformOrigin = '50% 50%';
   }
 
   if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', () => setTimeout(init, 150));
+    document.addEventListener('DOMContentLoaded', () => setTimeout(init, 200));
   } else {
-    setTimeout(init, 150);
+    setTimeout(init, 200);
   }
 })();
