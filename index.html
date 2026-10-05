@@ -8,7 +8,7 @@
 <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
 <link href="https://fonts.googleapis.com/css2?family=Allura&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="css/style.css" />
-<link rel="stylesheet" href="css/featured-ring.css" />   
+<link rel="stylesheet" href="css/gallery-wall.css" />  
 </head>
 <body>
 
@@ -124,26 +124,50 @@
   </div>
 </section>
 
-<!-- WORKS -->
-<section class="bg-alt" id="works">
-  <div class="section-head reveal">
+<!-- ═══════════ WORKS — GALLERY WALL ═══════════ -->
+<section class="gallery-wall-section" id="works">
+
+  <!-- عنوان بالای گالری -->
+  <div class="gw-heading">
     <div class="num" data-i18n="works.num">۰۲ — گالری</div>
     <h2 data-i18n="works.title">آثار و نقاشی‌ها</h2>
-    <p data-i18n="works.desc">مجموعه‌ای از کارها در سه دسته‌بندی: دیجیتال، سنتی و اسکچ.</p>
+    <p data-i18n="works.desc">مجموعه‌ای از آثار در حوزه‌های نقاشی، طراحی و عکاسی.</p>
   </div>
-  
-<div class="featured-ring" id="featuredRing">
-  <div class="fr-stage" id="frStage">
-    <div class="fr-ring" id="frRing"></div>
+
+  <!-- دیوار و اجزای نمایشگاه -->
+  <div class="gw-wall"></div>
+  <div class="gw-track"></div>
+  <div class="gw-lamp"></div>
+  <div class="gw-spot"></div>
+  <div class="gw-rail"></div>
+  <div class="gw-wainscot"></div>
+  <div class="gw-floor"></div>
+  <div class="gw-glow"></div>
+
+  <!-- نقطه‌های بالا -->
+  <div class="gw-dots" id="gwDots"></div>
+
+  <!-- استیج (قاب‌ها) -->
+  <div class="gw-stage" id="gwStage"></div>
+
+  <!-- دکمه‌های چپ/راست -->
+  <button class="gw-nav" id="gwPrev" aria-label="قبلی">‹</button>
+  <button class="gw-nav" id="gwNext" aria-label="بعدی">›</button>
+
+  <!-- پلاک پایین -->
+  <div class="gw-plaque">
+    <span class="gw-lot" id="gwLot"></span>
+    <h2 id="gwTitle"></h2>
+    <p id="gwMeta"></p>
+    <div class="gw-bar"><i id="gwBar"></i></div>
   </div>
-  <div class="fr-floor"></div>
-  
-  
-  <div class="center-btn" style="text-align:center;margin-top:50px">
-    <a href="works.html" class="btn btn-ghost" style="padding:14px 32px;font-size:.95rem" data-i18n="works.viewAll">
-      نمایش همه آثار من ←
-    </a>
-  </div>
+
+  <!-- Zoom -->
+  <div class="gw-zoom" id="gwZoom"><img alt=""></div>
+
+  <!-- دکمه‌ی نمایش همه -->
+  <a href="works.html" class="gw-viewall" data-i18n="works.viewAll">نمایش همه آثار من ←</a>
+
 </section>
 
 <!-- CONTACT -->
@@ -391,7 +415,7 @@ document.addEventListener('languageChanged', (e)=>{
 <script src="js/main.js"></script>
 <script src="js/motion.js" defer></script>
 <script src="js/motion.js" defer></script>
-<script src="js/featured-ring.js" defer></script>   
+<script src="js/gallery-wall.js" defer></script> 
 </body>
 </body>
 </html>
