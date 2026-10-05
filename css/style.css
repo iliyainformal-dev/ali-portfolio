@@ -79,15 +79,14 @@ nav ul a.active::after{
   filter:blur(40px);pointer-events:none;
 }
 .hero .tag{
-  color:var(--accent-2);font-size:.9rem;letter-spacing:2px;
-  margin-bottom:18px;font-weight:600;
+  color:var(--accent-2);font-size:.75rem;letter-spacing:2px;
+  margin-bottom:14px;font-weight:600;
 }
 .hero h1{
-  font-size:clamp(2.2rem,6vw,4.4rem);
-  font-weight:800;line-height:1.15;margin-bottom:24px;
+  font-size:clamp(1.6rem,4vw,3rem);
+  font-weight:800;line-height:1.2;margin-bottom:18px;
 }
-.hero h1 em{font-style:normal;color:var(--accent)}
-.hero p{color:var(--muted);max-width:640px;font-size:1.1rem;margin-bottom:36px}
+.hero p{color:var(--muted);max-width:560px;font-size:.9rem;margin-bottom:28px}
 .btns{display:flex;gap:14px;flex-wrap:wrap}
 .btn{
   padding:14px 28px;border-radius:100px;font-weight:600;font-size:.95rem;
