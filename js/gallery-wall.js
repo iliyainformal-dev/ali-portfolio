@@ -17,14 +17,27 @@
     const fa = n => String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    /* ── داده از WORKS ── */
-    const ITEMS = WORKS.map(w => ({
-      src: w.image,
-      year: w.year,
-      category: w.category,
-      id: w.id
-    }));
+    /* ── داده از WORKS — از هر دسته، ۲ اثر اول ── */
+const PER_CATEGORY = 2;
+const FEATURED = (function(){
+  const groups = {};
+  WORKS.forEach(w => {
+    if(!groups[w.category]) groups[w.category] = [];
+    groups[w.category].push(w);
+  });
+  const picked = [];
+  Object.keys(groups).forEach(cat => {
+    groups[cat].slice(0, PER_CATEGORY).forEach(w => picked.push(w));
+  });
+  return picked;
+})();
 
+const ITEMS = FEATURED.map(w => ({
+  src: w.image,
+  year: w.year,
+  category: w.category,
+  id: w.id
+}));
     const CATEGORY_LABEL = {
       digital:     'نقاشی دیجیتال',
       traditional: 'نقاشی',
