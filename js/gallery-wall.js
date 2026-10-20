@@ -33,7 +33,8 @@ const FEATURED = (function(){
 })();
 
 const ITEMS = FEATURED.map(w => ({
-  src: w.image,
+  src: w.thumb || w.image,
+  full: w.image,
   year: w.year,
   category: w.category,
   id: w.id
@@ -196,7 +197,7 @@ const ITEMS = FEATURED.map(w => ({
     function openZoom(i){
       const z = $('gwZoom');
       const img = z.querySelector('img');
-      img.src = ITEMS[i].src;
+      img.src = ITEMS[i].full || ITEMS[i].src;
       z.classList.add('open');
       paused = true;
     }
@@ -213,15 +214,19 @@ const ITEMS = FEATURED.map(w => ({
       const t = (titles[item.id] && titles[item.id].title) || ('اثر ' + fa(i + 1));
       const h = $('gwTitle');
       const m = $('gwMeta');
-      h.classList.add('gw-sw');
-      m.classList.add('gw-sw');
-      setTimeout(() => {
-        h.textContent = t;
-        m.textContent = (CATEGORY_LABEL[item.category] || item.category) + ' · ' + item.year;
-        h.classList.remove('gw-sw');
-        m.classList.remove('gw-sw');
-      }, 220);
-      $('gwLot').textContent = 'LOT ' + fa(String(i + 1).padStart(2, '0'));
+      const lot = $('gwLot');
+      // پلاک از HTML حذف شده؛ اگه نبود، فقط قاب و نقطه‌ها آپدیت بشن
+      if(h && m){
+        h.classList.add('gw-sw');
+        m.classList.add('gw-sw');
+        setTimeout(() => {
+          h.textContent = t;
+          m.textContent = (CATEGORY_LABEL[item.category] || item.category) + ' · ' + item.year;
+          h.classList.remove('gw-sw');
+          m.classList.remove('gw-sw');
+        }, 220);
+      }
+      if(lot) lot.textContent = 'LOT ' + fa(String(i + 1).padStart(2, '0'));
       frames.forEach((f, k) => f.classList.toggle('on', k === i));
       dots.forEach((d, k) => d.classList.toggle('on', k === i));
     }

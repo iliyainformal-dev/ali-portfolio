@@ -1,0 +1,17 @@
+# فایل‌هایی که نباید روی سایت عمومی باشن
+.assetsignore
+.git
+.gitignore
+.wrangler
+.DS_Store
+**/.DS_Store
+node_modules
+worker.js
+wrangler.toml
+package.json
+package-lock.json
+scripts
+*.md
+*~
+trigger*.txt
+Archive.zip

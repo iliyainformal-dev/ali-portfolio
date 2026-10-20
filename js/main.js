@@ -52,10 +52,11 @@ tabs.forEach(tab=>{
   window.openLightbox = function(card){
     const data = card.dataset;
     
-    img.src = card.querySelector('img').src;
+    const fullSrc = data.full || card.querySelector('img').src;
+    img.src = fullSrc;
     img.alt = data.title || '';
     
-    bg.style.backgroundImage = `url('${card.querySelector('img').src}')`;
+    bg.style.backgroundImage = `url('${card.querySelector('img').src}')`; // پس‌زمینه‌ی تار: نسخه‌ی سبک کافیه
     
     title.textContent = data.title || 'بدون عنوان';
     desc.textContent  = data.desc  || '';
@@ -169,8 +170,9 @@ function renderFeaturedGallery(){
            data-category="${catLabel}"
            data-year="${w.year}"
            data-tools="${w.tools}"
-           data-insta="${w.insta || ''}">
-        <img src="${w.image}" alt="${title}" loading="lazy" />
+           data-insta="${w.insta || ''}"
+           data-full="${w.image}">
+        <img src="${w.thumb || w.image}" alt="${title}" loading="lazy" />
         <div class="cap">${title}<small>${catLabel} · ${w.year}</small></div>
       </div>
     `;
@@ -198,7 +200,7 @@ function renderFeaturedGallery(){
 
 /* ─── لود کردن محتوای آثار ─── */
 async function loadFeaturedContent(){
-  const lang = (window.i18n?.getCurrentLang)() || 'fa';
+  const lang = window.i18n?.getCurrentLang?.() || 'fa';
   try {
     const res = await fetch(`content/works/${lang}.json`);
     if(res.ok){
@@ -226,7 +228,6 @@ document.addEventListener('languageChanged', async ()=>{
   renderFeaturedGallery();
 });
 
-document.addEventListener('DOMContentLoaded', renderFeaturedGallery);
 /* ═══════════════════════════════════════════
    🎬 SPLASH SCREEN — زمان‌بندی جدید
    ═══════════════════════════════════════════ */
@@ -460,6 +461,21 @@ if(!data.role){
     el.className = 'form-message ' + type;
   }
   
+  /* متن ترجمه‌شده (اگه سیستم زبان لود نشده بود، متن فارسی) */
+  function tr(key, fallback){
+    const v = window.i18n?.t ? window.i18n.t(key, fallback) : fallback;
+    return (v && v !== key) ? v : fallback;
+  }
+  
+  // با عوض شدن زبان، دکمه‌های ورود/ثبت‌نام/خروج هم ترجمه بشن
+  document.addEventListener('languageChanged', updateAuthUI);
+  
+  function escapeHtml(text){
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+  
   /* ===== آپدیت UI بعد از ورود ===== */
   function updateAuthUI(){
     const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
@@ -469,11 +485,13 @@ if(!data.role){
     
     if(user){
       // کاربر لاگین شده
+      const firstName = (user.name || '').split(' ')[0];
+      const initial = (user.name || '?').charAt(0).toUpperCase();
       authButtons.innerHTML = `
         <div class="user-menu show">
-          <span class="user-greeting">سلام، <strong>${user.name.split(' ')[0]}</strong> 👋</span>
-          <div class="user-avatar" id="userAvatar" title="پروفایل">${user.name.charAt(0).toUpperCase()}</div>
-          <button class="auth-btn" id="logoutBtn">خروج</button>
+          <span class="user-greeting">${escapeHtml(tr('nav.greeting', 'سلام،'))} <strong>${escapeHtml(firstName)}</strong> 👋</span>
+          <div class="user-avatar" id="userAvatar" title="${escapeHtml(tr('profile.title', 'پروفایل'))}">${escapeHtml(initial)}</div>
+          <button class="auth-btn" id="logoutBtn" data-i18n="nav.logout">${escapeHtml(tr('nav.logout', 'خروج'))}</button>
         </div>
       `;
       
@@ -481,10 +499,11 @@ if(!data.role){
      document.getElementById('userAvatar')?.addEventListener('click', ()=>{
   window.location.href = 'profile.html';
 });
+    } else {
       // کاربر مهمان
       authButtons.innerHTML = `
-        <button class="auth-btn" id="loginBtn">ورود</button>
-        <button class="auth-btn auth-btn-primary" id="signupBtn">ثبت‌نام</button>
+        <button class="auth-btn" id="loginBtn" data-i18n="nav.login">${escapeHtml(tr('nav.login', 'ورود'))}</button>
+        <button class="auth-btn auth-btn-primary" id="signupBtn" data-i18n="nav.signup">${escapeHtml(tr('nav.signup', 'ثبت‌نام'))}</button>
       `;
       
       document.getElementById('loginBtn')?.addEventListener('click', ()=>openModal(loginModal));
@@ -531,14 +550,13 @@ if(!data.role){
   
   // اجرای اولیه
   checkAuth();
-})();
+
 /* ===== درخواست بازیابی رمز ===== */
 const forgotForm = document.getElementById('forgotForm');
 const forgotMessage = document.getElementById('forgotMessage');
 const resetForm = document.getElementById('resetForm');
 const resetMessage = document.getElementById('resetMessage');
 
-let recoveryData = { email: '', phone: '' };
 
 forgotForm?.addEventListener('submit', async (e)=>{
   e.preventDefault();
@@ -563,11 +581,8 @@ forgotForm?.addEventListener('submit', async (e)=>{
       return;
     }
     
-    // ذخیره اطلاعات برای مرحله بعد
-    recoveryData = { email: data.email, phone: data.phone };
-    
-    showMessage(forgotMessage, 
-      `✅ کد بازیابی تو: <strong style="font-size:1.4rem;letter-spacing:6px;display:block;margin-top:8px;color:#fff">${result.code}</strong>`, 
+    showMessage(forgotMessage,
+      '✅ ' + (result.message || 'کد بازیابی به ایمیلت فرستاده شد.'),
       'success');
     
     // بعد از ۲ ثانیه، برو به فرم تغییر رمز
@@ -646,3 +661,14 @@ resetForm?.addEventListener('submit', async (e)=>{
     submitBtn.innerHTML = '<span>تغییر رمز</span>';
   }
 });
+})();
+
+/* ── ارتفاع منوی بالا (برای اینکه گالری اول صفحه زیرش نره) ── */
+(function(){
+  const nav = document.querySelector('nav');
+  if(!nav) return;
+  const set = ()=>document.documentElement.style.setProperty('--nav-h', nav.offsetHeight + 'px');
+  set();
+  window.addEventListener('resize', set);
+  window.addEventListener('load', set);
+})();

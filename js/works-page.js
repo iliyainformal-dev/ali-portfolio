@@ -70,8 +70,9 @@ return `
        data-category="${catLabel}"
        data-year="${w.year}"
        data-tools="${w.tools}"
-       data-insta="${w.insta || ''}">
-    <img src="${w.image}" alt="${title || catLabel}" loading="lazy" />
+       data-insta="${w.insta || ''}"
+       data-full="${w.image}">
+    <img src="${w.thumb || w.image}" alt="${title || catLabel}" loading="lazy" />
     ${capTitle}
   </div>
 `;
@@ -119,7 +120,7 @@ return `
   
   /* ===== شروع ===== */
   async function init(){
-    const lang = (window.i18n?.getCurrentLang)() || 'fa';
+    const lang = window.i18n?.getCurrentLang?.() || 'fa';
     await loadContent(lang);
     renderAllGalleries();
   }

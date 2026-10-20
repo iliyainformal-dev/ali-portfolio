@@ -351,3 +351,18 @@
   .gw-bar{width:110px}
   .gw-viewall{bottom:calc(22% + 16px); font-size:.9rem; padding:12px 32px}
 }
+/* ── وقتی گالری اولین بخش صفحه‌ست: زیر منوی ثابت شروع بشه ── */
+.gallery-wall-section.gw-first{
+  margin-top:var(--nav-h, 72px);
+  height:calc(100vh - var(--nav-h, 72px));
+  height:calc(100svh - var(--nav-h, 72px));
+}
+.gallery-wall-section.gw-first ~ .hero{padding-top:100px}
+/* چیدمان جمع‌وجورتر وقتی بالای صفحه‌ست: عنوان، بعد قاب‌ها، دکمه روی کف */
+.gallery-wall-section.gw-first .gw-heading{top:22px}
+.gallery-wall-section.gw-first .gw-stage{top:clamp(118px, 18%, 150px)}
+.gallery-wall-section.gw-first .gw-viewall{bottom:calc(11% - 26px)}
+@media(max-width:700px){
+  .gallery-wall-section.gw-first .gw-viewall{bottom:calc(11% - 22px)}
+}
+.gw-viewall{white-space:nowrap}

@@ -70,7 +70,7 @@ if (path === 'delete-account' && request.method === 'POST') {
     
   } catch (err) {
     console.error('API Error:', err);
-    return jsonResponse({ error: 'خطای سرور', details: err.message }, 500, corsHeaders);
+    return jsonResponse({ error: 'خطای سرور' }, 500, corsHeaders);
   }
 }
 
@@ -100,14 +100,13 @@ async function handleSignup(request, env, corsHeaders) {
   
   // ساخت کاربر جدید
   const userId = crypto.randomUUID();
-  const salt = crypto.randomUUID();
-  const passwordHash = await hashPassword(password, salt);
+  const storedPassword = await makePasswordRecord(password);
   
   await env.DB.prepare(`
   INSERT INTO users (id, email, password_hash, name, phone, age, gender, role)
   VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 `).bind(
-  userId, email.toLowerCase(), `${salt}:${passwordHash}`,
+  userId, email.toLowerCase(), storedPassword,
   name, phone || null, age || null, gender || null, role
 ).run();
   
@@ -145,11 +144,15 @@ async function handleLogin(request, env, corsHeaders) {
   }
   
   // بررسی پسورد
-  const [salt, storedHash] = user.password_hash.split(':');
-  const inputHash = await hashPassword(password, salt);
-  
-  if (inputHash !== storedHash) {
+  const check = await verifyPassword(password, user.password_hash);
+  if (!check.ok) {
     return jsonResponse({ error: 'ایمیل یا پسورد اشتباه است' }, 401, corsHeaders);
+  }
+  
+  // رمزهای قدیمی (هش ضعیف‌تر) رو بی‌صدا به فرمت قوی‌تر ارتقا بده
+  if (check.needsUpgrade) {
+    await env.DB.prepare('UPDATE users SET password_hash = ? WHERE id = ?')
+      .bind(await makePasswordRecord(password), user.id).run();
   }
   
   // ساخت session جدید
@@ -211,13 +214,27 @@ async function handleMe(request, env, corsHeaders) {
   return jsonResponse({
     user: {
       id: session.id, email: session.email, name: session.name,
-      age: session.age, gender: session.gender, role: session.role,
-      avatar_url: session.avatar_url, bio: session.bio
+      phone: session.phone, age: session.age, gender: session.gender,
+      role: session.role, avatar_url: session.avatar_url, bio: session.bio,
+      created_at: session.created_at
     }
   }, 200, corsHeaders);
 }
-/* ===== درخواست بازیابی رمز ===== */
+/* ===== درخواست بازیابی رمز =====
+   🔐 کد فقط به ایمیل صاحب حساب فرستاده می‌شه، هیچ‌وقت توی جواب API نمیاد.
+   برای فعال شدن، باید کلید سرویس ایمیل (Resend) تنظیم بشه:
+     npx wrangler secret put RESEND_API_KEY
+   و در wrangler.toml مقدار MAIL_FROM (مثلاً "Ali Ghaemi <no-reply@alighaemi.art>").
+   تا اون موقع این بخش پیام «موقتاً غیرفعال» برمی‌گردونه.
+*/
 async function handleForgotPassword(request, env, corsHeaders) {
+  if (!env.RESEND_API_KEY || !env.MAIL_FROM) {
+    return jsonResponse({
+      error: 'بازیابی رمز موقتاً غیرفعاله. لطفاً از طریق تلگرام یا ایمیل با ما در تماس باش.',
+      disabled: true
+    }, 503, corsHeaders);
+  }
+  
   const body = await request.json();
   const { email, phone } = body;
   
@@ -225,17 +242,20 @@ async function handleForgotPassword(request, env, corsHeaders) {
     return jsonResponse({ error: 'ایمیل و شماره موبایل الزامی است' }, 400, corsHeaders);
   }
   
+  // جواب همیشه یکسانه، تا کسی نتونه بفهمه یه ایمیل توی سایت ثبت شده یا نه
+  const genericOk = jsonResponse({
+    success: true,
+    expiresIn: 600,
+    message: 'اگه این اطلاعات درست باشه، کد بازیابی به ایمیلت فرستاده شد. ۱۰ دقیقه اعتبار داره.'
+  }, 200, corsHeaders);
+  
   const user = await env.DB.prepare(
-    'SELECT id, name FROM users WHERE email = ? AND phone = ?'
+    'SELECT id, name, email FROM users WHERE email = ? AND phone = ?'
   ).bind(email.toLowerCase(), phone).first();
   
-  if (!user) {
-    return jsonResponse({ 
-      error: 'کاربری با این ایمیل و شماره موبایل پیدا نشد' 
-    }, 404, corsHeaders);
-  }
+  if (!user) return genericOk;
   
-  const code = Math.floor(100000 + Math.random() * 900000).toString();
+  const code = secureSixDigitCode();
   const expiresAt = Math.floor(Date.now() / 1000) + (10 * 60);
   
   await env.DB.prepare(`
@@ -244,13 +264,42 @@ async function handleForgotPassword(request, env, corsHeaders) {
     WHERE id = ?
   `).bind(code, expiresAt, user.id).run();
   
-  return jsonResponse({
-    success: true,
-    code: code,
-    userName: user.name,
-    expiresIn: 600,
-    message: 'کد بازیابی صادر شد. ۱۰ دقیقه اعتبار داره.'
-  }, 200, corsHeaders);
+  const sent = await sendRecoveryEmail(env, user.email, user.name, code);
+  if (!sent) {
+    return jsonResponse({ error: 'ارسال ایمیل ناموفق بود. چند دقیقه دیگه دوباره امتحان کن.' }, 502, corsHeaders);
+  }
+  
+  return genericOk;
+}
+
+/* ===== ارسال ایمیل کد بازیابی (Resend) ===== */
+async function sendRecoveryEmail(env, to, name, code) {
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: env.MAIL_FROM,
+        to: [to],
+        subject: 'کد بازیابی رمز | Password reset code',
+        text: `سلام ${name || ''}\n\nکد بازیابی رمز شما: ${code}\nاین کد ۱۰ دقیقه اعتبار دارد.\nاگر شما درخواست نداده‌اید، این ایمیل را نادیده بگیرید.\n\nYour password reset code: ${code} (valid for 10 minutes).`
+      })
+    });
+    return res.ok;
+  } catch (err) {
+    console.error('Email send failed:', err);
+    return false;
+  }
+}
+
+/* ===== کد ۶ رقمی امن ===== */
+function secureSixDigitCode() {
+  const buf = new Uint32Array(1);
+  crypto.getRandomValues(buf);
+  return (100000 + (buf[0] % 900000)).toString();
 }
 
 /* ===== تغییر رمز با کد بازیابی ===== */
@@ -276,8 +325,14 @@ async function handleResetPassword(request, env, corsHeaders) {
     return jsonResponse({ error: 'کاربر پیدا نشد' }, 404, corsHeaders);
   }
   
-  if (user.recovery_code !== code) {
-    return jsonResponse({ error: 'کد بازیابی اشتباهه' }, 400, corsHeaders);
+  if (!user.recovery_code || user.recovery_code !== String(code).trim()) {
+    // با هر حدس اشتباه، کد باطل می‌شه تا کسی نتونه کدها رو یکی‌یکی امتحان کنه
+    if (user.recovery_code) {
+      await env.DB.prepare(
+        'UPDATE users SET recovery_code = NULL, recovery_expires = NULL WHERE id = ?'
+      ).bind(user.id).run();
+    }
+    return jsonResponse({ error: 'کد بازیابی اشتباهه. دوباره درخواست کد بده.' }, 400, corsHeaders);
   }
   
   const now = Math.floor(Date.now() / 1000);
@@ -285,14 +340,11 @@ async function handleResetPassword(request, env, corsHeaders) {
     return jsonResponse({ error: 'کد بازیابی منقضی شده. دوباره درخواست بده' }, 400, corsHeaders);
   }
   
-  const salt = crypto.randomUUID();
-  const passwordHash = await hashPassword(newPassword, salt);
-  
   await env.DB.prepare(`
     UPDATE users
     SET password_hash = ?, recovery_code = NULL, recovery_expires = NULL
     WHERE id = ?
-  `).bind(`${salt}:${passwordHash}`, user.id).run();
+  `).bind(await makePasswordRecord(newPassword), user.id).run();
   
   await env.DB.prepare('DELETE FROM sessions WHERE user_id = ?').bind(user.id).run();
   
@@ -388,6 +440,13 @@ async function handleUpdateAvatar(request, env, corsHeaders) {
     return jsonResponse({ error: 'عکس ارسال نشده' }, 400, corsHeaders);
   }
   
+  // فقط آواتار آماده یا عکس واقعی قبوله
+  const isPreset = /^preset:[1-8]$/.test(avatar_url);
+  const isImage = /^data:image\/(png|jpe?g|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(avatar_url);
+  if (!isPreset && !isImage) {
+    return jsonResponse({ error: 'فرمت عکس معتبر نیست' }, 400, corsHeaders);
+  }
+  
   // اگه base64 بود، حجمش رو چک کن (حدود ۲MB)
   if (avatar_url.startsWith('data:')) {
     const sizeInBytes = (avatar_url.length * 3) / 4;
@@ -428,10 +487,8 @@ async function handleDeleteAccount(request, env, corsHeaders) {
   }
   
   // بررسی پسورد
-  const [salt, storedHash] = user.password_hash.split(':');
-  const inputHash = await hashPassword(password, salt);
-  
-  if (inputHash !== storedHash) {
+  const check = await verifyPassword(password, user.password_hash);
+  if (!check.ok) {
     return jsonResponse({ error: 'پسورد اشتباهه' }, 401, corsHeaders);
   }
   
@@ -444,8 +501,14 @@ async function handleDeleteAccount(request, env, corsHeaders) {
     message: 'حساب کاربری حذف شد'
   }, 200, corsHeaders);
 }
-/* ===== هش کردن پسورد ===== */
-async function hashPassword(password, salt) {
+/* ===== هش کردن پسورد =====
+   فرمت جدید:  v2:salt:hash   (۱۰۰ هزار دور PBKDF2، حداکثر مجاز در Cloudflare)
+   فرمت قدیمی: salt:hash      (۱۰ هزار دور) — موقع ورود خودکار ارتقا پیدا می‌کنه
+*/
+const HASH_ITERATIONS_V2 = 100000;
+const HASH_ITERATIONS_LEGACY = 10000;
+
+async function hashPassword(password, salt, iterations = HASH_ITERATIONS_V2) {
   const encoder = new TextEncoder();
   const keyMaterial = await crypto.subtle.importKey(
     'raw', encoder.encode(password), 'PBKDF2', false, ['deriveBits']
@@ -454,7 +517,7 @@ async function hashPassword(password, salt) {
     {
       name: 'PBKDF2',
       salt: encoder.encode(salt),
-      iterations: 10000,
+      iterations,
       hash: 'SHA-256'
     },
     keyMaterial,
@@ -462,6 +525,37 @@ async function hashPassword(password, salt) {
   );
   return Array.from(new Uint8Array(hash))
     .map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function makePasswordRecord(password) {
+  const salt = crypto.randomUUID();
+  return `v2:${salt}:${await hashPassword(password, salt, HASH_ITERATIONS_V2)}`;
+}
+
+async function verifyPassword(password, record) {
+  if (!record) return { ok: false };
+  const parts = record.split(':');
+  let salt, stored, iterations, needsUpgrade;
+  if (parts[0] === 'v2' && parts.length === 3) {
+    [, salt, stored] = parts;
+    iterations = HASH_ITERATIONS_V2;
+    needsUpgrade = false;
+  } else if (parts.length === 2) {
+    [salt, stored] = parts;
+    iterations = HASH_ITERATIONS_LEGACY;
+    needsUpgrade = true;
+  } else {
+    return { ok: false };
+  }
+  const input = await hashPassword(password, salt, iterations);
+  return { ok: safeEqual(input, stored), needsUpgrade };
+}
+
+function safeEqual(a, b) {
+  if (typeof a !== 'string' || typeof b !== 'string' || a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
 }
 
 /* ===== پاسخ JSON ===== */

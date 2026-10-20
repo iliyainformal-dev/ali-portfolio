@@ -6,7 +6,6 @@
 <title data-i18n="site.title">علی قائمی — طراح گرافیک و هنرمند</title>
 <meta name="description" content="پورتفولیوی علی قائمی: نقاشی، طراحی گرافیک و NFT" />
 <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
-<link href="https://fonts.googleapis.com/css2?family=Allura&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="css/style.css" />
 <link rel="stylesheet" href="css/gallery-wall.css" />  
 </head>
@@ -16,8 +15,8 @@
   <a href="index.html" class="logo" data-i18n="nav.logo">علی</a>
   
   <ul id="mainMenu">
-    <li><a href="#about" data-i18n="nav.about">درباره</a></li>
     <li><a href="#works" data-i18n="nav.works">آثار</a></li>
+    <li><a href="#about" data-i18n="nav.about">درباره</a></li>
     <li><a href="about.html" data-i18n="nav.story">داستان من</a></li>
     <li><a href="contact.html" data-i18n="nav.contact">تماس</a></li>
   </ul>
@@ -46,27 +45,43 @@
   <button class="menu-toggle" id="menuToggle" aria-label="منو">☰</button>
 </nav>
 
-<!-- SPLASH SCREEN -->
-<div class="splash" id="splash">
-  <div class="splash-glow"></div>
-  
-  <!-- مرحله ۱: بیت فردوسی -->
-  <div class="splash-poem-block" id="splashPoem">
-    <div class="splash-bismillah" id="splashBismillah" data-i18n="splash.bismillah">﷽</div>
-    <div class="splash-poem">
-      <p class="splash-line" data-i18n="splash.poem1">به نام خداوند جان و خرد</p>
-      <p class="splash-line" data-i18n="splash.poem2">کزین برتر اندیشه برنگذرد</p>
-    </div>
-    <div class="splash-author" data-i18n="splash.author">— فردوسی، شاهنامه —</div>
+<!-- ═══════════ WORKS — GALLERY WALL ═══════════ -->
+<section class="gallery-wall-section gw-first" id="works">
+
+  <!-- عنوان بالای گالری -->
+  <div class="gw-heading">
+    <div class="num" data-i18n="works.num">۰۲ — گالری</div>
+    <h2 data-i18n="works.title">آثار و نقاشی‌ها</h2>
+    <p data-i18n="works.desc">مجموعه‌ای از آثار در حوزه‌های نقاشی، طراحی و عکاسی.</p>
   </div>
+
+  <!-- دیوار و اجزای نمایشگاه -->
+  <div class="gw-wall"></div>
+  <div class="gw-track"></div>
+  <div class="gw-lamp"></div>
+  <div class="gw-spot"></div>
+  <div class="gw-rail"></div>
   
-  <!-- مرحله ۲: لوگو و امضا -->
-  <div class="splash-logo-block" id="splashLogo">
-    <img src="images/logo/portrait.png" class="logo-portrait" alt="" />
-    <img src="images/logo/line.png" class="logo-line" alt="" />
-    <img src="images/logo/name.png" class="logo-name" alt="" />
-  </div>
-</div>
+
+  <!-- نقطه‌های بالا -->
+  <div class="gw-dots" id="gwDots"></div>
+
+  <!-- استیج (قاب‌ها) -->
+  <div class="gw-stage" id="gwStage"></div>
+
+  <!-- دکمه‌های چپ/راست -->
+  <button class="gw-nav" id="gwPrev" aria-label="قبلی">‹</button>
+  <button class="gw-nav" id="gwNext" aria-label="بعدی">›</button>
+
+  
+
+  <!-- Zoom -->
+  <div class="gw-zoom" id="gwZoom"><img alt=""></div>
+
+  <!-- دکمه‌ی نمایش همه -->
+  <a href="works.html" class="gw-viewall" data-i18n="works.viewAll">نمایش همه آثار من ←</a>
+
+</section>
 
 <!-- HERO -->
 <header class="hero">
@@ -80,7 +95,7 @@
     طراح گرافیک، تصویرساز و عکاس. اینجا مجموعه‌ای از نقاشی‌ها، طراحی‌ها و ایده‌هایی که در طول مسیر ساختم رو می‌بینی.
   </p>
   <div class="btns">
-    <a href="#works" class="btn btn-primary" data-i18n="hero.viewWorks">دیدن آثار</a>
+    <a href="works.html" class="btn btn-primary" data-i18n="hero.viewWorks">دیدن آثار</a>
     <a href="contact.html" class="btn btn-ghost" data-i18n="hero.startCollab">شروع همکاری</a>
   </div>
 </header>
@@ -122,44 +137,6 @@
       </div>
     </div>
   </div>
-</section>
-
-<!-- ═══════════ WORKS — GALLERY WALL ═══════════ -->
-<section class="gallery-wall-section" id="works">
-
-  <!-- عنوان بالای گالری -->
-  <div class="gw-heading">
-    <div class="num" data-i18n="works.num">۰۲ — گالری</div>
-    <h2 data-i18n="works.title">آثار و نقاشی‌ها</h2>
-    <p data-i18n="works.desc">مجموعه‌ای از آثار در حوزه‌های نقاشی، طراحی و عکاسی.</p>
-  </div>
-
-  <!-- دیوار و اجزای نمایشگاه -->
-  <div class="gw-wall"></div>
-  <div class="gw-track"></div>
-  <div class="gw-lamp"></div>
-  <div class="gw-spot"></div>
-  <div class="gw-rail"></div>
-  
-
-  <!-- نقطه‌های بالا -->
-  <div class="gw-dots" id="gwDots"></div>
-
-  <!-- استیج (قاب‌ها) -->
-  <div class="gw-stage" id="gwStage"></div>
-
-  <!-- دکمه‌های چپ/راست -->
-  <button class="gw-nav" id="gwPrev" aria-label="قبلی">‹</button>
-  <button class="gw-nav" id="gwNext" aria-label="بعدی">›</button>
-
-  
-
-  <!-- Zoom -->
-  <div class="gw-zoom" id="gwZoom"><img alt=""></div>
-
-  <!-- دکمه‌ی نمایش همه -->
-  <a href="works.html" class="gw-viewall" data-i18n="works.viewAll">نمایش همه آثار من ←</a>
-
 </section>
 
 <!-- CONTACT -->
@@ -386,20 +363,6 @@
     window.location.replace('welcome.html');
   }
 })();
-</script>
-<script>
-document.addEventListener('languageChanged', (e)=>{
-  const bismillah = document.getElementById('splashBismillah');
-  if(bismillah){
-    // اگه فارسی یا عربی → فونت بزرگ (﷽)
-    // اگه نه → فونت متوسط (متن)
-    if(e.detail.lang === 'fa' || e.detail.lang === 'ar'){
-      bismillah.style.fontSize = '3rem';
-    } else {
-      bismillah.style.fontSize = '1.6rem';
-    }
-  }
-});
 </script>
 <script src="js/i18n.js"></script>
 <script src="js/works.js"></script>

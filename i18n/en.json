@@ -39,7 +39,7 @@
     "startCollab": "Start a Collaboration"
   },
   "about": {
-    "num": "01 — About",
+    "num": "02 — About",
     "title": "About Me",
     "p1": "I am Ali Ghaemi — a graphic designer, illustrator and photographer. For years I have lived with colour, line and form, working on illustration, branding and photography projects.",
     "p2": "I believe good design is not merely beautiful — it must speak, convey feeling and endure. This collection is a window into my professional and creative world.",
@@ -63,7 +63,7 @@
     }
   },
   "works": {
-    "num": "02 — Gallery",
+    "num": "01 — Gallery",
     "title": "Works & Paintings",
     "desc": "A selection of works in painting, drawing and photography.",
     "viewAll": "View All Works →",
