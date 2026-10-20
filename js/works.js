@@ -57,12 +57,29 @@ const WORKS = [
 
 /* ===== ترجمه دسته‌بندی‌ها ===== */
 function getCategoryLabel(cat, i18n){
+  const t = (k, f) => {
+    if(i18n?.worksPage?.tabs?.[k]) return i18n.worksPage.tabs[k];
+    const v = window.i18n?.t ? window.i18n.t('worksPage.tabs.' + k, f) : f;
+    return (v && v !== 'worksPage.tabs.' + k) ? v : f;
+  };
   const map = {
-    digital:     i18n?.worksPage?.tabs?.digital     || 'نقاشی دیجیتال',
-    traditional: i18n?.worksPage?.tabs?.traditional || 'نقاشی',
-    sketch:      i18n?.worksPage?.tabs?.sketch      || 'اتود',
-    poster:      i18n?.worksPage?.tabs?.poster      || 'پوستر',
-    photo:       i18n?.worksPage?.tabs?.photo       || 'عکاسی'
+    digital:     t('digital', 'نقاشی دیجیتال'),
+    traditional: t('traditional', 'نقاشی'),
+    sketch:      t('sketch', 'اتود'),
+    poster:      t('poster', 'پوستر'),
+    photo:       t('photo', 'عکاسی')
   };
   return map[cat] || cat;
+}
+
+/* ===== سال اثر به زبان بازدیدکننده =====
+   سال‌ها در WORKS شمسی‌اند (مثلاً «۱۴۰۲»). برای فارسی همون نمایش داده می‌شه؛
+   برای بقیه‌ی زبان‌ها سال میلادی تقریبی (شمسی + ۶۲۱). */
+function formatWorkYear(year){
+  const lang = window.i18n?.getCurrentLang?.() || 'fa';
+  const latin = String(year || '').replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+  const n = parseInt(latin, 10);
+  if(!n) return year || '';
+  if(lang === 'fa') return year;
+  return String(n < 1700 ? n + 621 : n);
 }

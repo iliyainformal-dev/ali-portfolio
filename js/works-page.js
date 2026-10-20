@@ -60,15 +60,15 @@ const desc = text.desc || '';
         const catLabel = getCategoryLabel(w.category);
         
         const capTitle = title 
-  ? `<div class="cap">${title}<small>${catLabel} · ${w.year}</small></div>`
-  : `<div class="cap cap-no-title"><small>${catLabel} · ${w.year}</small></div>`;
+  ? `<div class="cap">${title}<small>${catLabel} · ${formatWorkYear(w.year)}</small></div>`
+  : `<div class="cap cap-no-title"><small>${catLabel} · ${formatWorkYear(w.year)}</small></div>`;
 
 return `
   <div class="art"
        data-title="${title || catLabel}"
        data-desc="${desc}"
        data-category="${catLabel}"
-       data-year="${w.year}"
+       data-year="${formatWorkYear(w.year)}"
        data-tools="${w.tools}"
        data-insta="${w.insta || ''}"
        data-full="${w.image}">
@@ -123,6 +123,10 @@ return `
     const lang = window.i18n?.getCurrentLang?.() || 'fa';
     await loadContent(lang);
     renderAllGalleries();
+    // لینک مستقیم به یه دسته، مثل works.html#poster
+    const want = location.hash.slice(1);
+    const tab = want && document.querySelector(`.tab[data-target="${CSS.escape(want)}"]`);
+    if(tab) tab.click();
   }
   
   document.addEventListener('DOMContentLoaded', init);
