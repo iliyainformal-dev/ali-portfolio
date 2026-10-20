@@ -232,10 +232,16 @@ const ITEMS = FEATURED.map(w => ({
     }
 
     /* ── لوپ ── */
+    // ⚡ سرعت: وقتی دیوار دیده نمی‌شه یا تب پشت صحنه‌ست، انیمیشن متوقف می‌شه
+    let onScreen = true;
+    const sec = stage.closest('section') || stage;
+    new IntersectionObserver(en => { onScreen = en[0].isIntersecting; }).observe(sec);
+
     (function loop(now){
       requestAnimationFrame(loop);
       const dt = Math.min(now - last, 60);
       last = now;
+      if(!onScreen || document.hidden) return;
 
       if(!paused && !dragging && !reduce){
         elapsed += dt;

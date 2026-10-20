@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title data-i18n="site.title">علی قائمی — طراح گرافیک و هنرمند</title>
 <meta name="description" content="پورتفولیوی علی قائمی: نقاشی، طراحی گرافیک و NFT" />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
 <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
+<link rel="icon" href="images/logo/favicon.png" />
 <link rel="stylesheet" href="css/style.css" />
 <link rel="stylesheet" href="css/gallery-wall.css" />  
 </head>
@@ -104,7 +106,7 @@
 <section id="about">
   <div class="about-grid">
     <div class="about-photo reveal">
-      <img src="images/profile/me.jpg" alt="علی قائمی" />
+      <img src="images/profile/me-web.jpg" alt="علی قائمی" />
     </div>
     <div class="about-text reveal">
       <div class="section-head" style="margin-bottom:24px">
@@ -355,11 +357,11 @@
 <!-- بررسی welcome -->
 <script>
 (function(){
-  const fromWelcome = sessionStorage.getItem('fromWelcome');
-  
-  // هر بار کاربر تازه سایت رو باز کرد → welcome بیاد
-  // فقط اگه از خود welcome اومده باشه، index رو نشون بده
-  if(!fromWelcome){
+  // ⚡ سرعت: صفحه‌ی Welcome فقط بار اول (وقتی هنوز زبان انتخاب نشده) نشون داده می‌شه.
+  // قبلاً هر بار که مرورگر تازه باز می‌شد یه صفحه‌ی کامل اضافه + نقشه لود می‌شد.
+  let fromWelcome = null, saved = null;
+  try { fromWelcome = sessionStorage.getItem('fromWelcome'); saved = localStorage.getItem('selectedLanguage'); } catch(e){}
+  if(!fromWelcome && !saved){
     window.location.replace('welcome.html');
   }
 })();

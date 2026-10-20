@@ -37,18 +37,34 @@
   const hero = document.querySelector('.hero');
   if (!hero) return;
 
-  const s = document.createElement('script');
-  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
-  s.onload = async () => {
-    const geo = await loadCountries();
-    try { startScene(geo); } catch (err) { console.warn('3D globe disabled:', err); }
-  };
-  document.head.appendChild(s);
+  /* ⚡ سرعت: کتابخونه‌ی سه‌بعدی (حدود ۶۰۰ کیلوبایت) و نقشه فقط وقتی دانلود می‌شن که
+     صفحه کامل لود شده و کره نزدیک دید کاربره؛ روی «صرفه‌جویی داده» یا اینترنت 2G اصلاً لود نمی‌شه. */
+  const conn = navigator.connection || {};
+  if (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '')) return;
+
+  let started = false;
+  function startGlobe(){
+    if (started) return; started = true;
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+    s.async = true;
+    s.onload = async () => {
+      const geo = await loadCountries();
+      try { startScene(geo); } catch (err) { console.warn('3D globe disabled:', err); }
+    };
+    document.head.appendChild(s);
+  }
+  function whenNear(){
+    const io = new IntersectionObserver(en => {
+      if (en.some(e => e.isIntersecting)) { io.disconnect(); if (window.requestIdleCallback) requestIdleCallback(startGlobe, { timeout: 1500 }); else setTimeout(startGlobe, 300); }
+    }, { rootMargin: '0px 0px 120px 0px' });
+    io.observe(hero);
+  }
+  if (document.readyState === 'complete') whenNear(); else addEventListener('load', whenNear);
 
   async function loadCountries(){
     const urls = [
-      'https://cdn.jsdelivr.net/gh/nvkelso/natural-earth-vector@master/geojson/ne_110m_admin_0_countries.geojson',
-      'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson'
+      'https://cdn.jsdelivr.net/gh/nvkelso/natural-earth-vector@master/geojson/ne_110m_admin_0_countries.geojson'
     ];
     for (const u of urls) {
       try { const r = await fetch(u); if (r.ok) return await r.json(); } catch (e) {}
