@@ -2,6 +2,14 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8" />
+<script>
+/* ⚡ اول از همه: اگه بازدیدکننده از Welcome نیومده، همین الان بره اونجا
+   (قبل از اینکه CSS و عکس‌های این صفحه دانلود بشن) */
+(function(){
+  try { if(!sessionStorage.getItem('fromWelcome')) location.replace('welcome.html'); } catch(e){}
+})();
+</script>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title data-i18n="site.title">علی قائمی — طراح گرافیک و هنرمند</title>
 <meta name="description" content="پورتفولیوی علی قائمی: نقاشی، طراحی گرافیک و NFT" />
@@ -353,19 +361,7 @@
   <div class="lightbox-hint" id="lightboxHint" data-i18n="lightbox.hint">✨ حال و هوای موشن</div>
 </div>
 
-<!-- بررسی انتخاب زبان -->
-<!-- بررسی welcome -->
-<script>
-(function(){
-  // ⚡ سرعت: صفحه‌ی Welcome فقط بار اول (وقتی هنوز زبان انتخاب نشده) نشون داده می‌شه.
-  // قبلاً هر بار که مرورگر تازه باز می‌شد یه صفحه‌ی کامل اضافه + نقشه لود می‌شد.
-  let fromWelcome = null, saved = null;
-  try { fromWelcome = sessionStorage.getItem('fromWelcome'); saved = localStorage.getItem('selectedLanguage'); } catch(e){}
-  if(!fromWelcome && !saved){
-    window.location.replace('welcome.html');
-  }
-})();
-</script>
+
 <script src="js/i18n.js"></script>
 <script src="js/works.js"></script>
 <script src="js/main.js"></script>

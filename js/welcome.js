@@ -34,7 +34,8 @@ let selectedLanguage = 'en';
 
 document.addEventListener('DOMContentLoaded', async () => {
   createStars();
-  loadWorldMap();
+  // نقشه بعد از نمایش کارت لود می‌شه تا اول خود فرم سریع بیاد بالا
+  (window.requestIdleCallback ? requestIdleCallback(loadWorldMap, { timeout: 800 }) : setTimeout(loadWorldMap, 200));
   COUNTRIES = await loadCountries();
   renderCountryList();
   setupEvents();
@@ -44,7 +45,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 function createStars(){
   const container = document.getElementById('stars');
   if(!container) return;
-  for(let i=0;i<60;i++){
+  const count = innerWidth < 600 ? 28 : 60;
+  for(let i=0;i<count;i++){
     const star=document.createElement('div');
     star.className='star';
     star.style.left=Math.random()*100+'%';
@@ -213,9 +215,16 @@ async function loadWorldMap(){
   const wrap = document.getElementById('worldMapWrap');
   if(!wrap) return;
   try{
-    const res = await fetch('https://cdn.jsdelivr.net/npm/@svg-maps/world@1.0.1/world.svg');
-    if(!res.ok) throw new Error('Map not found');
-    const svgText = await res.text();
+    // ⚡ اول نسخه‌ی محلی نقشه (images/world.svg، از همین سرور و کش‌شده)، اگه نبود از CDN
+    let svgText = '';
+    for(const url of ['images/world.svg', 'https://cdn.jsdelivr.net/npm/@svg-maps/world@1.0.1/world.svg']){
+      try {
+        const res = await fetch(url);
+        const type = res.headers.get('content-type') || '';
+        if(res.ok && type.includes('svg')){ svgText = await res.text(); break; }
+      } catch(e){}
+    }
+    if(!svgText) throw new Error('Map not found');
     wrap.innerHTML = svgText;
     const svg = wrap.querySelector('svg');
     if(svg){
