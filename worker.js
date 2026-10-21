@@ -18,15 +18,37 @@ export default {
 
 /* ===== مدیریت API ===== */
 async function handleAPI(request, env, url) {
-  // CORS
-  const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-  };
-  
+  // 🔐 API فقط برای صفحه‌های خود سایت؛ هیچ سایت دیگه‌ای اجازه‌ی صدا زدنش رو نداره
+  const corsHeaders = {};
   if (request.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { status: 204 });
+  }
+  if (request.method === 'POST') {
+    const origin = request.headers.get('Origin');
+    if (origin && origin !== url.origin) {
+      return jsonResponse({ error: 'دسترسی مجاز نیست' }, 403);
+    }
+    const len = parseInt(request.headers.get('Content-Length') || '0', 10);
+    if (len > 3 * 1024 * 1024) {
+      return jsonResponse({ error: 'درخواست بیش از حد بزرگه' }, 413);
+    }
+  }
+
+  // 🔐 محدودیت تعداد تلاش (جلوی حدس زدن رمز و اسپم)
+  const LIMITS = {
+    login:            [10, 15 * 60],
+    signup:           [5, 60 * 60],
+    'forgot-password':[5, 60 * 60],
+    'reset-password': [10, 60 * 60],
+    'delete-account': [5, 60 * 60]
+  };
+  const action = url.pathname.replace('/api/', '');
+  if (request.method === 'POST' && LIMITS[action]) {
+    const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+    const [max, windowSec] = LIMITS[action];
+    if (await tooManyAttempts(env, `${action}:${ip}`, max, windowSec)) {
+      return jsonResponse({ error: 'تعداد تلاش‌ها زیاد بود. کمی بعد دوباره امتحان کن.' }, 429);
+    }
   }
   
   try {
@@ -89,6 +111,8 @@ async function handleSignup(request, env, corsHeaders) {
   if (!email.includes('@')) {
     return jsonResponse({ error: 'ایمیل معتبر نیست' }, 400, corsHeaders);
   }
+  const bad = tooLong({ email: [email, 254], password: [password, 128], name: [name, 80], phone: [phone, 20], role: [role, 30], gender: [gender, 10] });
+  if (bad) return jsonResponse({ error: bad }, 400, corsHeaders);
   
   // بررسی ایمیل تکراری
   const existing = await env.DB.prepare('SELECT id FROM users WHERE email = ?')
@@ -134,6 +158,8 @@ async function handleLogin(request, env, corsHeaders) {
   if (!email || !password) {
     return jsonResponse({ error: 'ایمیل و پسورد الزامی است' }, 400, corsHeaders);
   }
+  const bad = tooLong({ email: [email, 254], password: [password, 128] });
+  if (bad) return jsonResponse({ error: bad }, 400, corsHeaders);
   
   // پیدا کردن کاربر
   const user = await env.DB.prepare('SELECT * FROM users WHERE email = ?')
@@ -311,6 +337,9 @@ async function handleResetPassword(request, env, corsHeaders) {
     return jsonResponse({ error: 'اطلاعات ناقص است' }, 400, corsHeaders);
   }
   
+  if (String(newPassword).length > 128 || String(code).length > 10) {
+    return jsonResponse({ error: 'اطلاعات نامعتبر' }, 400, corsHeaders);
+  }
   if (newPassword.length < 6) {
     return jsonResponse({ error: 'پسورد باید حداقل ۶ کاراکتر باشه' }, 400, corsHeaders);
   }
@@ -393,6 +422,8 @@ async function handleUpdateProfile(request, env, corsHeaders) {
   if (!name || !name.trim()) {
     return jsonResponse({ error: 'اسم نمی‌تونه خالی باشه' }, 400, corsHeaders);
   }
+  const bad = tooLong({ name: [name, 80], role: [role, 30], gender: [gender, 10] });
+  if (bad) return jsonResponse({ error: bad }, 400, corsHeaders);
   
   if (bio && bio.length > 500) {
     return jsonResponse({ error: 'بیوگرافی حداکثر ۵۰۰ کاراکتر' }, 400, corsHeaders);
@@ -558,12 +589,48 @@ function safeEqual(a, b) {
   return diff === 0;
 }
 
-/* ===== پاسخ JSON ===== */
+/* ===== محدودیت تعداد تلاش (ذخیره در D1؛ جدولش خودکار ساخته می‌شه) ===== */
+let rateTableReady = false;
+async function tooManyAttempts(env, key, max, windowSec) {
+  try {
+    if (!rateTableReady) {
+      await env.DB.prepare('CREATE TABLE IF NOT EXISTS rate_limits (key TEXT PRIMARY KEY, count INTEGER NOT NULL, reset_at INTEGER NOT NULL)').run();
+      rateTableReady = true;
+    }
+    const now = Math.floor(Date.now() / 1000);
+    const row = await env.DB.prepare('SELECT count, reset_at FROM rate_limits WHERE key = ?').bind(key).first();
+    if (!row || row.reset_at <= now) {
+      await env.DB.prepare('INSERT OR REPLACE INTO rate_limits (key, count, reset_at) VALUES (?, 1, ?)').bind(key, now + windowSec).run();
+      return false;
+    }
+    if (row.count >= max) return true;
+    await env.DB.prepare('UPDATE rate_limits SET count = count + 1 WHERE key = ?').bind(key).run();
+    return false;
+  } catch (err) {
+    console.error('rate limit error:', err);
+    return false; // اگه شمارنده خراب شد، سایت از کار نیفته
+  }
+}
+
+/* ===== بررسی طول ورودی‌ها ===== */
+function tooLong(fields) {
+  for (const [label, [value, max]] of Object.entries(fields)) {
+    if (value != null && String(value).length > max) return `مقدار «${label}» بیش از حد طولانیه`;
+  }
+  return null;
+}
+
+/* ===== پاسخ JSON (با سربرگ‌های امنیتی) ===== */
 function jsonResponse(data, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(data), {
     status,
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
+      'Cache-Control': 'no-store',
+      'X-Content-Type-Options': 'nosniff',
+      'X-Frame-Options': 'DENY',
+      'Referrer-Policy': 'no-referrer',
+      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
       ...extraHeaders
     }
   });

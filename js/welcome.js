@@ -1,3 +1,11 @@
+/* فونت‌ها بدون مسدود کردن نمایش صفحه لود بشن */
+document.querySelectorAll('link[data-async-css]').forEach(l => {
+  if (l.sheet) l.media = 'all'; else l.addEventListener('load', () => { l.media = 'all'; });
+});
+window.addEventListener('beforeunload', () => {
+  try { sessionStorage.setItem('fromWelcome', '1'); } catch(e){}
+});
+
 const LANG_BY_COUNTRY = {
   IR:'fa',AF:'fa',TJ:'fa',
   SA:'ar',AE:'ar',EG:'ar',DZ:'ar',MA:'ar',IQ:'ar',JO:'ar',KW:'ar',LB:'ar',LY:'ar',

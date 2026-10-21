@@ -71,8 +71,10 @@ tabs.forEach(tab=>{
     if(data.insta){
       linksHTML += `<a href="${data.insta}" target="_blank">📷 مشاهده در اینستاگرام</a>`;
     }
-    linksHTML += `<button onclick="copyLink('${location.origin}${location.pathname}#${data.slug||''}')">🔗 کپی لینک</button>`;
+    linksHTML += `<button type="button" class="copy-link-btn">🔗 کپی لینک</button>`;
     links.innerHTML = linksHTML;
+    const shareUrl = `${location.origin}${location.pathname}#${data.slug||''}`;
+    links.querySelector('.copy-link-btn')?.addEventListener('click', () => copyLink(shareUrl));
     
     const sb = data.storyboard;
     if(sb && sb.trim()){
