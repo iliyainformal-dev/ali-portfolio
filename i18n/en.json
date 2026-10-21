@@ -1,10 +1,10 @@
 {
   "site": {
     "title": "Ali Ghaemi — Graphic Designer & Artist",
-    "footer": "alighaemi.art · © 2025 Ali Ghaemi"
+    "footer": "alighaemi.art · © 2026 Ali Ghaemi"
   },
   "nav": {
-    "logo": "Ali",
+    "logo": "Ali Ghaemi",
     "about": "About",
     "works": "Works",
     "story": "My Story",
@@ -39,7 +39,7 @@
     "startCollab": "Start a Collaboration"
   },
   "about": {
-    "num": "02 — About",
+    "num": "About",
     "title": "About Me",
     "p1": "I am Ali Ghaemi — a graphic designer, illustrator and photographer. For years I have lived with colour, line and form, working on illustration, branding and photography projects.",
     "p2": "I believe good design is not merely beautiful — it must speak, convey feeling and endure. This collection is a window into my professional and creative world.",
@@ -63,7 +63,7 @@
     }
   },
   "works": {
-    "num": "01 — Gallery",
+    "num": "Gallery",
     "title": "Works & Paintings",
     "desc": "A selection of works in painting, drawing and photography.",
     "viewAll": "View All Works →",
@@ -71,7 +71,7 @@
     "defaultCategory": "Digital Painting"
   },
   "worksPage": {
-    "num": "02 — Full Gallery",
+    "num": "Full Gallery",
     "title": "All My Works",
     "desc": "A collection of works in five categories: digital painting, painting, sketches, posters and photography.",
     "tabs": {
@@ -86,7 +86,7 @@
     "backToHome": "← Back to Home"
   },
   "contact": {
-    "num": "02 — Invitation",
+    "num": "Invitation",
     "title": "Let's create <em>something lasting</em> together.",
     "desc": "If you have a project or would like to talk, please get in touch.",
     "letterTitle": "A Letter for You",

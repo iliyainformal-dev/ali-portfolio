@@ -7,25 +7,45 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
 <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
 <link rel="icon" href="images/logo/favicon.png" />
+<link href="https://cdn.jsdelivr.net/gh/rastikerdar/parastoo-font@v2.0.1/dist/font-face.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/cormorant-garamond@5.1.0/500.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/cormorant-garamond@5.1.0/500-italic.css" rel="stylesheet" />
 <link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/pages-classic.css" />
 </head>
-<body>
+<body class="pg-classic">
 
 <nav>
-  <a href="index.html" class="logo">علی<span>.</span></a>
+  <a href="index.html" class="logo" data-i18n="nav.logo">علی</a>
+  
   <ul id="mainMenu">
-    <li><a href="index.html#about">درباره</a></li>
-    <li><a href="index.html#works">آثار</a></li>
-    <li><a href="about.html">داستان من</a></li>
-    <li><a href="contact.html">تماس</a></li>
+    <li><a href="works.html" data-i18n="nav.works">آثار</a></li>
+    <li><a href="index.html#about" data-i18n="nav.about">درباره</a></li>
+    <li><a href="about.html" data-i18n="nav.story">داستان من</a></li>
+    <li><a href="contact.html" data-i18n="nav.contact">تماس</a></li>
   </ul>
-  <div class="auth-buttons">
-    <div class="user-menu show">
-      <span class="user-greeting">سلام، <strong id="navUserName">...</strong></span>
-      <div class="user-avatar" id="navUserAvatar">?</div>
-      <button class="auth-btn" id="logoutBtn">خروج</button>
+  
+  <div class="lang-switcher">
+    <button class="lang-btn" id="langBtn">
+      <span id="langFlag">🇬🇧</span>
+      <span id="langCode">EN</span>
+    </button>
+    <div class="lang-dropdown" id="langDropdown">
+      <button data-lang="fa"><span>🇮🇷</span> فارسی</button>
+      <button data-lang="en"><span>🇬🇧</span> English</button>
+      <button data-lang="ar"><span>🇸🇦</span> العربية</button>
+      <button data-lang="ru"><span>🇷🇺</span> Русский</button>
+      <button data-lang="de"><span>🇩🇪</span> Deutsch</button>
+      <button data-lang="zh"><span>🇨🇳</span> 中文</button>
+      <button data-lang="fr"><span>🇫🇷</span> Français</button>
     </div>
   </div>
+  
+  <div class="auth-buttons">
+    <button class="auth-btn" id="loginBtn" data-i18n="nav.login">ورود</button>
+    <button class="auth-btn auth-btn-primary" id="signupBtn" data-i18n="nav.signup">ثبت‌نام</button>
+  </div>
+  
   <button class="menu-toggle" id="menuToggle" aria-label="منو">☰</button>
 </nav>
 
@@ -259,5 +279,6 @@
 
 <script src="js/main.js"></script>
 <script src="js/profile.js"></script>
+<script src="js/scroll-motion.js" defer></script>
 </body>
 </html>

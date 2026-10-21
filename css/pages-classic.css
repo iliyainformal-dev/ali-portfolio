@@ -112,3 +112,85 @@
 }
 
 .pg-classic .auth-buttons{margin-inline-start:28px}
+
+/* ═══════════════════════════════════════════
+   یکدست‌سازی کل سایت با طراحی تأییدشده (بدون تغییر چیدمان صفحه‌ها)
+   ═══════════════════════════════════════════ */
+
+/* زبان */
+.pg-classic .lang-btn{border-radius:0;background:transparent;border:1px solid var(--line)}
+.pg-classic .lang-dropdown{background:#17130f;border:1px solid var(--line);border-radius:0}
+.pg-classic .lang-dropdown button.active,.pg-classic .lang-dropdown button:hover{color:var(--accent)}
+@media(min-width:821px){.pg-classic nav ul{margin-inline-start:34px}}
+
+/* دکمه‌ها: قاب طلایی باریک به‌جای کپسول قرمز/گرادیان */
+.pg-classic .btn,.pg-classic .btn-more,.pg-classic .gw-viewall,.pg-classic .socials a{
+  border-radius:0 !important;background:transparent !important;color:var(--accent) !important;
+  border:1px solid var(--accent) !important;box-shadow:none !important;
+  font-weight:500 !important;letter-spacing:.12em;text-transform:uppercase;font-size:.8rem !important;
+  padding:14px 30px !important;transition:background .35s,color .35s !important;transform:none !important;
+}
+:lang(fa) .pg-classic .btn,:lang(fa) .pg-classic .btn-more,:lang(fa) .pg-classic .gw-viewall,:lang(fa) .pg-classic .socials a,
+:lang(ar) .pg-classic .btn,:lang(ar) .pg-classic .btn-more,:lang(ar) .pg-classic .gw-viewall,:lang(ar) .pg-classic .socials a{letter-spacing:0;font-size:.95rem !important}
+.pg-classic .btn:hover,.pg-classic .btn-more:hover,.pg-classic .gw-viewall:hover,.pg-classic .socials a:hover{background:var(--accent) !important;color:#1a1209 !important}
+.pg-classic .btn-ghost{border-color:var(--line) !important;color:var(--text) !important}
+
+/* شماره‌ها و برچسب‌های کوچک: طلایی و آرام */
+.pg-classic .num,.pg-classic .section-head .num{color:var(--accent) !important;letter-spacing:.3em;font-weight:500}
+:lang(fa) .pg-classic .num,:lang(ar) .pg-classic .num{letter-spacing:.04em}
+
+/* تیترها: فونت نمایشی (Cormorant / پرستو) */
+.pg-classic h1,.pg-classic h2,.pg-classic .section-head h2{font-family:var(--display);font-weight:500;letter-spacing:.01em}
+:lang(fa) .pg-classic h1,:lang(fa) .pg-classic h2,:lang(ar) .pg-classic h1,:lang(ar) .pg-classic h2{font-weight:700}
+.pg-classic h1 em,.pg-classic h2 em,.pg-classic .contact h2 em,.pg-classic .about-hero h1 em{font-style:italic;color:var(--accent)}
+:lang(fa) .pg-classic h1 em,:lang(fa) .pg-classic h2 em,:lang(ar) .pg-classic h1 em,:lang(ar) .pg-classic h2 em{font-style:normal}
+
+/* ── صفحه‌ی اصلی ── */
+.pg-classic .gallery-wall-section{--accent:#c8a46a;--gold:#c8a46a;--text:#efe7da}
+.pg-classic .hero{min-height:auto;padding-top:140px;padding-bottom:120px}
+.pg-classic .hero h1{font-size:clamp(2rem,4.4vw,3.4rem);line-height:1.25}
+.pg-classic .hero .tag{color:var(--accent);letter-spacing:.3em;text-transform:uppercase;font-weight:500}
+:lang(fa) .pg-classic .hero .tag,:lang(ar) .pg-classic .hero .tag{letter-spacing:.04em}
+.pg-classic section{padding-top:110px;padding-bottom:110px}
+.pg-classic .about-photo{border-radius:0;border:0;background:var(--paper);padding:14px;
+  box-shadow:0 30px 70px rgba(0,0,0,.55),inset 0 0 0 1px rgba(120,90,40,.25)}
+.pg-classic .contact h2{font-size:clamp(2rem,4vw,3.2rem)}
+.pg-classic .contact h2 em{color:var(--accent)}
+
+/* مهارت‌ها: به‌جای نوار درصدی، فهرست تمیز «ابزار ··· سطح» */
+.pg-classic .skill-bar{display:none}
+.pg-classic .skill{margin:0;padding:12px 0;border-bottom:1px solid var(--line)}
+.pg-classic .skill-head{margin:0;font-size:1rem}
+.pg-classic .skill-head span:first-child{font-family:'Cormorant Garamond',serif;font-size:1.25rem;direction:ltr}
+.pg-classic .skill-head span:last-child{color:var(--muted);font-size:.85rem;align-self:center}
+.pg-classic .skills-block h3,.pg-classic .about-section h3{color:var(--accent) !important;font-weight:500;letter-spacing:.1em}
+.pg-classic .about-skills-full{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));column-gap:48px;border-top:1px solid var(--line);margin-top:14px}
+
+/* ── صفحه‌ی داستان من ── */
+.pg-classic .about-hero{padding-top:170px}
+.pg-classic .about-hero h1{font-size:clamp(2.4rem,5.5vw,4.2rem)}
+.pg-classic .about-section.bg-alt{background:transparent;border-color:var(--line)}
+.pg-classic .about-section h2 .num{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--accent);letter-spacing:.05em}
+.pg-classic .about-section p{line-height:2}
+.pg-classic .back-link{color:var(--accent)}
+
+/* پروفایل */
+.pg-classic .profile-card{border-radius:0;background:var(--card);border-color:var(--line)}
+
+/* ═══════════ صفحه‌ی Welcome ═══════════ */
+.pg-welcome{--accent:#c8a46a;--accent-2:#c8a46a}
+.pg-welcome .glow-1{background:radial-gradient(circle,rgba(110,26,31,.28),transparent 70%)}
+.pg-welcome .welcome-card{border-radius:0;background:rgba(23,19,15,.92);border:1px solid rgba(200,164,106,.25);
+  box-shadow:0 40px 90px rgba(0,0,0,.6),inset 0 0 0 8px rgba(23,19,15,.92),inset 0 0 0 9px rgba(200,164,106,.22)}
+.pg-welcome .main-title{font-family:'Cormorant Garamond','Parastoo',serif;font-weight:500;font-size:2.4rem;background:none;-webkit-text-fill-color:#efe7da;color:#efe7da;letter-spacing:.06em}
+:lang(fa) .pg-welcome .main-title,:lang(ar) .pg-welcome .main-title{font-family:'Parastoo','Vazirmatn',serif;font-weight:700;letter-spacing:0}
+.pg-welcome .field-icon{display:none}
+.pg-welcome .country-picker-btn,.pg-welcome .field-select{border-radius:0}
+.pg-welcome .greeting{font-family:'Cormorant Garamond','Parastoo',serif;font-weight:500;text-shadow:none;color:#c8a46a}
+.pg-welcome .next-btn{border-radius:0;background:transparent;color:#c8a46a;border:1px solid #c8a46a;box-shadow:none;letter-spacing:.12em;text-transform:uppercase;font-weight:500}
+:lang(fa) .pg-welcome .next-btn,:lang(ar) .pg-welcome .next-btn{letter-spacing:0}
+.pg-welcome .next-btn:hover{background:#c8a46a;color:#1a1209;box-shadow:none}
+.pg-welcome .country-modal{border-radius:0}
+
+/* بخش دوم «داستان من» با بقیه هم‌تراز بشه */
+.pg-classic .about-section.bg-alt > *{max-width:calc(900px - 12vw)}

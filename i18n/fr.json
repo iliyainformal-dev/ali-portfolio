@@ -1,10 +1,10 @@
 {
   "site": {
     "title": "Ali Ghaemi — Graphiste & Artiste",
-    "footer": "alighaemi.art · © 2025 Ali Ghaemi"
+    "footer": "alighaemi.art · © 2026 Ali Ghaemi"
   },
   "nav": {
-    "logo": "Ali",
+    "logo": "Ali Ghaemi",
     "about": "À propos",
     "works": "Œuvres",
     "story": "Mon histoire",
@@ -39,7 +39,7 @@
     "startCollab": "Démarrer une collaboration"
   },
   "about": {
-    "num": "02 — À propos",
+    "num": "À propos",
     "title": "À propos de moi",
     "p1": "Je suis Ali Ghaemi, graphiste, illustrateur et photographe. Depuis des années, je vis au rythme de la couleur, de la ligne et de la forme, et je travaille sur des projets d'illustration, d'identité visuelle et de photographie.",
     "p2": "Je crois qu'un bon design ne se contente pas d'être beau : il doit parler, transmettre une émotion et durer. Cette collection est une fenêtre ouverte sur mon univers professionnel et créatif.",
@@ -63,7 +63,7 @@
     }
   },
   "works": {
-    "num": "01 — Galerie",
+    "num": "Galerie",
     "title": "Œuvres & Peintures",
     "desc": "Une sélection d'œuvres dans les domaines de la peinture, du dessin et de la photographie.",
     "viewAll": "Voir toutes les œuvres →",
@@ -71,7 +71,7 @@
     "defaultCategory": "Peinture numérique"
   },
   "worksPage": {
-    "num": "02 — Galerie complète",
+    "num": "Galerie complète",
     "title": "Toutes mes œuvres",
     "desc": "Une collection d'œuvres répartie en cinq catégories : peinture numérique, peinture, études, affiches et photographie.",
     "tabs": {
@@ -86,7 +86,7 @@
     "backToHome": "← Retour à l'accueil"
   },
   "contact": {
-    "num": "02 — Invitation",
+    "num": "Invitation",
     "title": "Créons ensemble <em>une œuvre durable</em>.",
     "desc": "Si vous avez un projet ou souhaitez échanger, n'hésitez pas à me contacter.",
     "letterTitle": "Une lettre pour vous",
