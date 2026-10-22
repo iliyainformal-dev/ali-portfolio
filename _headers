@@ -1,4 +1,4 @@
-# 🔐 سربرگ‌های امنیتی برای همه‌ی صفحه‌ها و فایل‌ها
+# Security headers for every page and file
 /*
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   X-Content-Type-Options: nosniff
@@ -8,6 +8,6 @@
   Cross-Origin-Opener-Policy: same-origin
   Content-Security-Policy: default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data: blob:; connect-src 'self' https://cdn.jsdelivr.net; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
 
-# ⚡ کش مرورگر: عکس‌ها ۷ روز در مرورگر بازدیدکننده می‌مونن (بار دوم خیلی سریع‌تر)
+# Browser cache: images kept for 7 days (faster repeat visits)
 /images/*
   Cache-Control: public, max-age=604800
